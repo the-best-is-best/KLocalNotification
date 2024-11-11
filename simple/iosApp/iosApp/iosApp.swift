@@ -34,7 +34,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             window.makeKeyAndVisible()
         }
 
-       
+        if let userInfo = launchOptions?[.remoteNotification] as? [String: AnyObject] {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                
+                LocalNotification.shared.notifyNotificationClicked(data: userInfo)
+            }
+        }
 
         return true
     }
@@ -42,8 +47,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     // Handle notifications while the app is in the foreground
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         // Show notifications while app is in the foreground
+        let userInfo = notification.request.content.userInfo
+        
+        LocalNotification.shared.notifyNotificationReceived(data: userInfo)
         completionHandler([.alert, .sound, .badge])
     }
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                 didReceive response: UNNotificationResponse,
+                                 withCompletionHandler completionHandler: @escaping () -> Void) {
+        // Handle the notification tap
+        let userInfo = response.notification.request.content.userInfo
+            // Do something based on the type of the notification
+        LocalNotification.shared.notifyNotificationClicked(data: userInfo)
 
+        
+        
+        // Always call the completion handler
+        completionHandler()
+    }
     
 }

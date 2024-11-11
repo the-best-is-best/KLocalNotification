@@ -35,6 +35,7 @@ kotlin {
         it.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            export(project(":KLocalNotification"))  // Export KLocalNotification so it's available in the framework
         }
     }
 
@@ -69,6 +70,8 @@ kotlin {
 //        }
 
         iosMain.dependencies {
+            api(project(":KLocalNotification"))  // Add KLocalNotification as an API dependency here
+
         }
 
     }

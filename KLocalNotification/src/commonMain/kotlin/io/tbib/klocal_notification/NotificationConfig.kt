@@ -20,8 +20,8 @@ data class NotificationConfig(
 expect object LocalNotification {
     fun showNotification(config: NotificationConfig)
     fun removeNotification(notificationId: Int)
-    fun setNotificationReceivedListener(callback: ((Result<Map<Any?, *>?>) -> Unit)?)
-    fun setNotificationClickedListener(callback: ((Result<Map<Any?, *>?>) -> Unit)?)
+    fun setNotificationReceivedListener(callback: (Map<Any?, *>) -> Unit)
+    fun setNotificationClickedListener(callback: (Map<Any?, *>) -> Unit)
 
 
 }

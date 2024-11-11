@@ -26,8 +26,10 @@ class MyNotificationListenerService : NotificationListenerService() {
             val gson = Gson()
             val type = object : TypeToken<Map<String, String>>() {}.type
             val customData = gson.fromJson<Map<Any?, *>?>(dataJson, type)
-            notificationListener?.invoke(Result.success(customData))
-            LocalNotification.setNotificationReceivedListener(notificationListener)
+            notificationListener?.invoke(customData)
+            if (notificationListener != null) {
+                LocalNotification.setNotificationReceivedListener(notificationListener!!)
+            }
         } else {
             Log.d("MyNotificationListener", "No data extra in notification")
         }

@@ -15,8 +15,8 @@ import com.google.gson.reflect.TypeToken
 import java.util.Calendar
 
 actual object LocalNotification {
-    var notificationListener: ((Result<Map<Any?, *>?>) -> Unit)? = null
-    private var notificationClickedListener: ((Result<Map<Any?, *>?>) -> Unit)? = null
+    internal var notificationListener: ((Map<Any?, *>) -> Unit)? = null
+    private var notificationClickedListener: ((Map<Any?, *>) -> Unit)? = null
 
     @SuppressLint("LaunchActivityFromNotification")
     actual fun showNotification(config: NotificationConfig) {
@@ -83,8 +83,9 @@ actual object LocalNotification {
                 .build()
 
             NotificationManagerCompat.from(context).notify(config.id, notification)
-
-            notificationListener?.invoke(Result.success(config.data))
+            if (config.data != null) {
+                notificationListener?.invoke(config.data)
+            }
 
         }
     }
@@ -107,11 +108,11 @@ actual object LocalNotification {
         alarmManager.cancel(pendingIntent)
     }
 
-    actual fun setNotificationReceivedListener(callback: ((Result<Map<Any?, *>?>) -> Unit)?) {
+    actual fun setNotificationReceivedListener(callback: (Map<Any?, *>) -> Unit) {
         notificationListener = callback
     }
 
-    actual fun setNotificationClickedListener(callback: ((Result<Map<Any?, *>?>) -> Unit)?) {
+    actual fun setNotificationClickedListener(callback: (Map<Any?, *>) -> Unit) {
         notificationClickedListener = callback
     }
 
@@ -124,7 +125,7 @@ actual object LocalNotification {
             val yourDataMap: Map<Any?, *> =
                 Gson().fromJson(dataJson, type) // Deserialize back to a map
             if (yourDataMap.isNotEmpty()) {
-                notificationClickedListener?.invoke(Result.success(yourDataMap))
+                notificationClickedListener?.invoke(yourDataMap)
             }
         }, 500)
     }

@@ -63,7 +63,7 @@ internal fun App() = AppTheme {
                     message = "Test Message",
                     smallIcon = "ic_notification",
                     data = mapOf("test" to 1),
-                    schedule = true,
+                    schedule = false,
                     dateTime = currentDateTme,
                 )
             )

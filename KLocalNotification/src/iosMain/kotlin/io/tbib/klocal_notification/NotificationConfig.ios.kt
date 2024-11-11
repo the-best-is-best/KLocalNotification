@@ -9,13 +9,16 @@ import platform.UserNotifications.UNNotificationRequest
 import platform.UserNotifications.UNTimeIntervalNotificationTrigger
 import platform.UserNotifications.UNUserNotificationCenter
 
-actual class LocalNotification actual constructor() {
+actual object LocalNotification {
+    private var notificationListener: ((Map<Any?, *>) -> Unit)? = null
+    private var notificationClickedListener: ((Map<Any?, *>) -> Unit)? = null
+
     actual fun showNotification(config: NotificationConfig) {
-        println("showNotification")
         val content = UNMutableNotificationContent()
             .apply {
                 setTitle(config.title)
                 setBody(config.message)
+                config.data?.let { setUserInfo(it) }
             }
 
 
@@ -59,4 +62,30 @@ actual class LocalNotification actual constructor() {
             }
         }
     }
+
+    actual fun removeNotification(notificationId: Int) {
+        val center = UNUserNotificationCenter.currentNotificationCenter()
+        center.removePendingNotificationRequestsWithIdentifiers(listOf(notificationId.toString()))
+    }
+
+    actual fun setNotificationReceivedListener(callback: (Map<Any?, *>) -> Unit) {
+        notificationListener = callback
+
+    }
+
+    actual fun setNotificationClickedListener(callback: (Map<Any?, *>) -> Unit) {
+        notificationClickedListener = callback
+
+    }
+
+    fun notifyNotificationReceived(data: Map<Any?, *>?) {
+        if (data != null)
+            notificationListener?.invoke(data)
+    }
+
+    fun notifyNotificationClicked(data: Map<Any?, *>?) {
+        if (data != null)
+            notificationClickedListener?.invoke(data)
+    }
+
 }
