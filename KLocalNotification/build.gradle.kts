@@ -47,7 +47,7 @@ extra["packageDescription"] =
     "KLocalNotification package provides a streamlined way to create and schedule local notifications for both Android and iOS platforms within Kotlin Multiplatform projects. It allows developers to set up notifications that inform or alert users at specified times or intervals, enhancing user engagement and facilitating reminders or updates."
 extra["system"] = "GITHUB"
 extra["issueUrl"] = "https://github.com/the-best-is-best/KLocalNotification/issues"
-extra["connectionGit"] = ".git"
+extra["connectionGit"] = "https://github.com/the-best-is-best/KLocalNotification.git"
 
 extra["developerName"] = "Michelle Raouf"
 extra["developerNameId"] = "MichelleRaouf"
@@ -61,7 +61,7 @@ mavenPublishing {
         extra["version"].toString()
     )
 
-    publishToMavenCentral(SonatypeHost.S01)
+    publishToMavenCentral(SonatypeHost.S01, true)
     signAllPublications()
 
     pom {
@@ -155,7 +155,7 @@ kotlin {
 //            implementation(libs.androidx.activityCompose)
             implementation(libs.kpermissions)
             implementation(libs.gson)
-
+            implementation(libs.androidx.core.ktx)
 
         }
 
