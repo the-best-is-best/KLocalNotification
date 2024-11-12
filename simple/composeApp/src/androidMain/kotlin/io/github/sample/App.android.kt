@@ -20,9 +20,7 @@ class AppActivity : ComponentActivity() {
 
         // Initialize notification channel and set up the listener
         AndroidKMessagingChannel().initChannel("reminder", "reminder")
-        LocalNotification.setNotificationClickedListener {
-            println("notification clicked data is $it")
-        }
+
 
         setContent { App() }
 

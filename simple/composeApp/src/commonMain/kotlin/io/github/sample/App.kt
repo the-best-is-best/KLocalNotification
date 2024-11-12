@@ -13,8 +13,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.github.kpermissions.enum.EnumAppPermission
-import io.github.kpermissions.handler.PermissionHandler
 import io.github.sample.theme.AppTheme
 import io.tbib.klocal_notification.LocalNotification
 import io.tbib.klocal_notification.NotificationConfig
@@ -27,20 +25,15 @@ import kotlin.time.Duration.Companion.seconds
 
 @Composable
 internal fun App() = AppTheme {
-    val permission = PermissionHandler()
-    LaunchedEffect(Unit) {
-        permission.requestPermission(EnumAppPermission.NOTIFICATION) {
-            println("permission $it")
-            if (!it) {
-                permission.openAppSettings()
-            }
-        }
-    }
+
     LocalNotification.setNotificationReceivedListener {
         println("notification received is $it")
     }
     LocalNotification.setNotificationClickedListener {
         println("notification clicked data is $it")
+    }
+    LaunchedEffect(Unit) {
+        LocalNotification.requestAuthorization()
     }
     var notificationId: Int? = null
     Column(
@@ -54,7 +47,7 @@ internal fun App() = AppTheme {
             notificationId = Random.nextInt().absoluteValue
             println("id is $notificationId")
             val currentDateTme =
-                Clock.System.now().plus(15.seconds).toLocalDateTime(TimeZone.currentSystemDefault())
+                Clock.System.now().plus(5.seconds).toLocalDateTime(TimeZone.currentSystemDefault())
             LocalNotification.showNotification(
                 config = NotificationConfig(
                     id = notificationId!!,
@@ -63,7 +56,7 @@ internal fun App() = AppTheme {
                     message = "Test Message",
                     smallIcon = "ic_notification",
                     data = mapOf("test" to 1),
-                    schedule = false,
+                    schedule = true,
                     dateTime = currentDateTme,
                 )
             )

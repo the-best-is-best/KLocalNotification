@@ -5,50 +5,46 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import io.github.kpermissions.enum.EnumAppPermission
+import io.github.kpermissions.handler.PermissionHandler
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.Calendar
+import kotlin.coroutines.resume
 
 actual object LocalNotification {
-    internal var notificationListener: ((Map<Any?, *>) -> Unit)? = null
+    private var notificationListener: ((Map<Any?, *>) -> Unit)? = null
     private var notificationClickedListener: ((Map<Any?, *>) -> Unit)? = null
 
-    @SuppressLint("LaunchActivityFromNotification")
+    @SuppressLint("LaunchActivityFromNotification", "MissingPermission", "SuspiciousIndentation")
     actual fun showNotification(config: NotificationConfig) {
 
         val gson = Gson()
         val configJson = if (config.data != null) gson.toJson(config.data) else null
         val context = AndroidKMessagingChannel.getActivity()
-        val intent = Intent(context.applicationContext, NotificationReceiver::class.java).apply {
+        val intent = Intent(
+            context.applicationContext,
+            if (config.schedule) NotificationScheduleReceiver::class.java else NotificationReceiver::class.java
+        ).apply {
             putExtra("title", config.title)
             putExtra("message", config.message)
             putExtra("id", config.id)
             putExtra("idChannel", config.idChannel)
             putExtra("icon", config.smallIcon)
             putExtra("data", configJson)
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-
-
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
-
-        // Set PendingIntent with the appropriate flag
-        val pendingIntentFlag =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                PendingIntent.FLAG_IMMUTABLE
-            } else {
-                PendingIntent.FLAG_UPDATE_CURRENT
-            }
 
         val pendingIntent = PendingIntent.getBroadcast(
             context.applicationContext,
             config.id,
             intent,
-            pendingIntentFlag
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -82,13 +78,15 @@ actual object LocalNotification {
 
                 .build()
 
+
+
             NotificationManagerCompat.from(context).notify(config.id, notification)
-            if (config.data != null) {
-                notificationListener?.invoke(config.data)
-            }
+            if (configJson != null)
+                notifyReceivedNotificationListener(configJson)
 
         }
     }
+
 
     actual fun removeNotification(notificationId: Int) {
         val notificationManager =
@@ -98,7 +96,7 @@ actual object LocalNotification {
         val alarmManager = AndroidKMessagingChannel.getActivity()
             .getSystemService(Context.ALARM_SERVICE) as AlarmManager
         // Notification = BroadcastReceiver class
-        val intent = Intent(context, NotificationReceiver::class.java)
+        val intent = Intent(context, NotificationScheduleReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             notificationId,
@@ -116,6 +114,18 @@ actual object LocalNotification {
         notificationClickedListener = callback
     }
 
+    fun notifyReceivedNotificationListener(dataJson: String) {
+        val type =
+            object :
+                TypeToken<Map<String, String>>() {}.type // Define the type for deserialization
+        val yourDataMap: Map<Any?, *> =
+            Gson().fromJson(dataJson, type) // Deserialize back to a map
+        if (yourDataMap.isNotEmpty()) {
+            notificationListener?.invoke(yourDataMap)
+        }
+
+    }
+
     fun notifyNotificationClickedListener(dataJson: String) {
         Handler(Looper.getMainLooper()).postDelayed({
 
@@ -128,6 +138,41 @@ actual object LocalNotification {
                 notificationClickedListener?.invoke(yourDataMap)
             }
         }, 500)
+    }
+
+//    fun notifyNotificationBackgroundClicked(dataBundle: Bundle) {
+//        if (!dataBundle.isEmpty()) {
+//            // Create a map to store the key-value pairs
+//            val dataMap = mutableMapOf<String, String>()
+//
+//            // Iterate over the keys in the Bundle (extras)
+//            for (key in dataBundle.keySet()) {
+//                // Get the value associated with the key
+//                val value = dataBundle.getString(key)
+//                // Add to the map if the value is not null
+//                if (value != null) {
+//                    dataMap[key] = value
+//                }
+//            }
+//
+//            // Convert the map to a JSON string using Gson
+//            val jsonString = Gson().toJson(dataMap)
+//            notifyNotificationClickedListener(jsonString)
+//
+//        }
+    // }
+
+    actual suspend fun requestAuthorization(): Result<Boolean> {
+        return suspendCancellableCoroutine { cont ->
+
+            val permission = PermissionHandler()
+            permission.requestPermission(EnumAppPermission.NOTIFICATION) { granted ->
+                if (!granted) {
+                    permission.openAppSettings()
+                }
+                cont.resume(Result.success(granted))
+            }
+        }
     }
 
 }

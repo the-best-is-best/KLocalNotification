@@ -1,21 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application>
+
+        <receiver
+            android:name=".NotificationScheduleReceiver"
+            android:enabled="true"
+            android:exported="false"></receiver>
+
         <receiver
             android:name=".NotificationReceiver"
             android:enabled="true"
-            android:exported="false" />
-
-        <service
-            android:name=".MyNotificationListenerService"
-            android:exported="false"
-            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
-            <intent-filter>
-                <action android:name="android.service.notification.NotificationListenerService" />
-            </intent-filter>
-        </service>
-
+            android:exported="false"></receiver>
     </application>
+
 </manifest>

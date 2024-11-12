@@ -151,8 +151,10 @@ kotlin {
         androidMain.dependencies {
 //            implementation(compose.uiTooling)
 //            implementation(libs.androidx.activityCompose)
-//            implementation(libs.kpermissions)
+            implementation(libs.kpermissions)
             implementation(libs.gson)
+            implementation(libs.kotlinx.coroutines.core)
+
 
         }
 
