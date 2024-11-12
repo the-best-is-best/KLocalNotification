@@ -21,7 +21,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.math.absoluteValue
 import kotlin.random.Random
-import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Duration.Companion.minutes
 
 @Composable
 internal fun App() = AppTheme {
@@ -47,7 +47,7 @@ internal fun App() = AppTheme {
             notificationId = Random.nextInt().absoluteValue
             println("id is $notificationId")
             val currentDateTme =
-                Clock.System.now().plus(5.seconds).toLocalDateTime(TimeZone.currentSystemDefault())
+                Clock.System.now().plus(1.minutes).toLocalDateTime(TimeZone.currentSystemDefault())
             LocalNotification.showNotification(
                 config = NotificationConfig(
                     id = notificationId!!,

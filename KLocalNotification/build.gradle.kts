@@ -38,19 +38,20 @@ tasks.withType<PublishToMavenRepository> {
 
 
 extra["packageNameSpace"] = "io.tbib.klocal_notification"
-extra["groupId"] = "com.example"
-extra["artifactId"] = "your-artifact-id"
-extra["version"] = "1.0.0"
+extra["groupId"] = "io.github.the-best-is-best"
+extra["artifactId"] = "klocal-notification"
+extra["version"] = "1.0.0-1-rc"
 extra["packageName"] = "KLocalNotification"
-extra["packageUrl"] = ""
-extra["packageDescription"] = ""
+extra["packageUrl"] = "https://github.com/the-best-is-best/KLocalNotification"
+extra["packageDescription"] =
+    "KLocalNotification package provides a streamlined way to create and schedule local notifications for both Android and iOS platforms within Kotlin Multiplatform projects. It allows developers to set up notifications that inform or alert users at specified times or intervals, enhancing user engagement and facilitating reminders or updates."
 extra["system"] = "GITHUB"
-extra["issueUrl"] = ""
+extra["issueUrl"] = "https://github.com/the-best-is-best/KLocalNotification/issues"
 extra["connectionGit"] = ".git"
 
-extra["developerName"] = ""
-extra["developerNameId"] = ""
-extra["developerEmail"] = ""
+extra["developerName"] = "Michelle Raouf"
+extra["developerNameId"] = "MichelleRaouf"
+extra["developerEmail"] = "eng.michelle.raouf@gmail.com"
 
 
 mavenPublishing {
@@ -138,6 +139,7 @@ kotlin {
 //            implementation(compose.components.resources)
 //            implementation(compose.components.uiToolingPreview)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.coroutines.core)
 
 
         }
@@ -153,7 +155,6 @@ kotlin {
 //            implementation(libs.androidx.activityCompose)
             implementation(libs.kpermissions)
             implementation(libs.gson)
-            implementation(libs.kotlinx.coroutines.core)
 
 
         }

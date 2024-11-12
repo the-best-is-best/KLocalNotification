@@ -16,16 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
         // Set the delegate for handling notifications while app is in the foreground
         UNUserNotificationCenter.current().delegate = self
+        LocalNotification.shared.requestAuthorization { value , error in
 
-        // Request push notification permissions
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { (granted, error) in
-            if granted {
-                DispatchQueue.main.async {
-                    UIApplication.shared.registerForRemoteNotifications()
-                }
-            } else {
-                print("Permission for push notifications denied.")
-            }
         }
 
         // Set the root view controller
@@ -59,9 +51,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let userInfo = response.notification.request.content.userInfo
             // Do something based on the type of the notification
         LocalNotification.shared.notifyNotificationClicked(data: userInfo)
-
-        
-        
         // Always call the completion handler
         completionHandler()
     }

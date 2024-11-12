@@ -19,7 +19,7 @@ data class NotificationConfig(
 
 expect object LocalNotification {
     fun showNotification(config: NotificationConfig)
-    suspend fun requestAuthorization(): Result<Boolean>
+    suspend fun requestAuthorization(): Boolean
     fun removeNotification(notificationId: Int)
     fun setNotificationReceivedListener(callback: (Map<Any?, *>) -> Unit)
     fun setNotificationClickedListener(callback: (Map<Any?, *>) -> Unit)

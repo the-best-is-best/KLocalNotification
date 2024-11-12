@@ -1,13 +1,18 @@
 package io.tbib.klocal_notification
 
+import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSDate
 import platform.Foundation.NSDateComponents
 import platform.Foundation.timeIntervalSinceNow
+import platform.UserNotifications.UNAuthorizationOptionAlert
+import platform.UserNotifications.UNAuthorizationOptionBadge
+import platform.UserNotifications.UNAuthorizationOptionSound
 import platform.UserNotifications.UNMutableNotificationContent
 import platform.UserNotifications.UNNotificationRequest
 import platform.UserNotifications.UNTimeIntervalNotificationTrigger
 import platform.UserNotifications.UNUserNotificationCenter
+import kotlin.coroutines.resume
 
 actual object LocalNotification {
     private var notificationListener: ((Map<Any?, *>) -> Unit)? = null
@@ -86,6 +91,29 @@ actual object LocalNotification {
     fun notifyNotificationClicked(data: Map<Any?, *>?) {
         if (data != null)
             notificationClickedListener?.invoke(data)
+    }
+
+    actual suspend fun requestAuthorization(): Boolean {
+        return suspendCancellableCoroutine { cont ->
+            val center = UNUserNotificationCenter.currentNotificationCenter()
+
+            center.requestAuthorizationWithOptions(
+                options = UNAuthorizationOptionAlert or UNAuthorizationOptionSound or UNAuthorizationOptionBadge,
+                completionHandler = { granted, error ->
+                    if (error != null) {
+                        // Handle error
+                        cont.resume(false)
+                    } else if (granted) {
+                        // Permission granted
+                        cont.resume(granted)
+                    } else {
+                        // Permission denied
+                        cont.resume(false)
+                    }
+                }
+            )
+
+        }
     }
 
 }

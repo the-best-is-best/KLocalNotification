@@ -162,15 +162,12 @@ actual object LocalNotification {
 //        }
     // }
 
-    actual suspend fun requestAuthorization(): Result<Boolean> {
+    actual suspend fun requestAuthorization(): Boolean {
         return suspendCancellableCoroutine { cont ->
 
             val permission = PermissionHandler()
             permission.requestPermission(EnumAppPermission.NOTIFICATION) { granted ->
-                if (!granted) {
-                    permission.openAppSettings()
-                }
-                cont.resume(Result.success(granted))
+                cont.resume(granted)
             }
         }
     }
