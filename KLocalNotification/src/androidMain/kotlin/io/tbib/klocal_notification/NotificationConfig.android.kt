@@ -37,7 +37,6 @@ actual object LocalNotification {
             putExtra("idChannel", config.idChannel)
             putExtra("icon", config.smallIcon)
             putExtra("data", configJson)
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
 
         val pendingIntent = PendingIntent.getBroadcast(
@@ -74,8 +73,7 @@ actual object LocalNotification {
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(getIconResourceIdByName(config.smallIcon))
-                .setAutoCancel(false)
-
+                .setAutoCancel(true)
                 .build()
 
 
