@@ -139,12 +139,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 ## How use it
 
 ```kotlin
+   // this lines add it in  App()
    LocalNotification.setNotificationReceivedListener {
         println("notification received is $it")
     }
     LocalNotification.setNotificationClickedListener {
         println("notification clicked data is $it")
     }
+    
+```
+
+- Example functionality use
+
+```kotlin
+
     LaunchedEffect(Unit) {
         LocalNotification.requestAuthorization()
     }
@@ -185,6 +193,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }) {
             Text("remove notification")
         }
-    }
-
+    }  
 ```
