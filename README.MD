@@ -39,7 +39,7 @@ implementation("io.github.the-best-is-best:klocal-notification:1.0.0-3-rc")
 
 <br>
 
-- First in ios gradle
+- First in gradle
 
 ```gradle
   listOf(
