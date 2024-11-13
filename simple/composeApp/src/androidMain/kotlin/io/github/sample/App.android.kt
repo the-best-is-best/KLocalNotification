@@ -7,7 +7,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import io.github.kpermissions.handler.PermissionHandler
 import io.tbib.klocal_notification.AndroidKMessagingChannel
 import io.tbib.klocal_notification.LocalNotification
 
@@ -16,7 +15,6 @@ class AppActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         AndroidKMessagingChannel.initialization(this)
-        PermissionHandler.init(this)
 
         // Initialize notification channel and set up the listener
         AndroidKMessagingChannel().initChannel("reminder", "reminder")
@@ -26,18 +24,16 @@ class AppActivity : ComponentActivity() {
 
         // Handle data from the intent if the activity is started with a notification click
         val data = intent.getStringExtra("data")
-        if (data != null) {
-            LocalNotification.notifyNotificationClickedListener(data)
-        }
+        LocalNotification.notifyNotificationOpenAppClicked(data)
+
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         // Handle new intent when activity is already in the background
         val data = intent.getStringExtra("data")
-        if (data != null) {
-            LocalNotification.notifyNotificationClickedListener(data)
-        }
+        LocalNotification.notifyNotificationClickedListener(data)
+
     }
 }
 

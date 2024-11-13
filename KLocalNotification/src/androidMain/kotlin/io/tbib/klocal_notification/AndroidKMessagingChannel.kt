@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import io.github.kpermissions.handler.PermissionHandler
 import java.lang.ref.WeakReference
 
 class AndroidKMessagingChannel {
@@ -14,10 +15,13 @@ class AndroidKMessagingChannel {
 
         internal fun getActivity(): Activity {
             return activity.get()!!
+
         }
 
         fun initialization(activity: Activity) {
+            PermissionHandler.init(activity)
             this.activity = WeakReference(activity)
+
         }
     }
 

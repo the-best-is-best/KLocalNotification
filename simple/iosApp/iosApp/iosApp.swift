@@ -15,10 +15,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         window = UIWindow(frame: UIScreen.main.bounds)
 
         // Set the delegate for handling notifications while app is in the foreground
-        UNUserNotificationCenter.current().delegate = self
-        LocalNotification.shared.requestAuthorization { value , error in
-
-        }
+        LocalNotification.shared.doInit(userNotificationCenterDelegate: self)
+        
 
         // Set the root view controller
         if let window = window {
@@ -27,10 +25,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
 
         if let userInfo = launchOptions?[.remoteNotification] as? [String: AnyObject] {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                
-                LocalNotification.shared.notifyNotificationClicked(data: userInfo)
-            }
+            LocalNotification.shared.notifyNotificationAppOpenClicked(data: userInfo)
+            
         }
 
         return true

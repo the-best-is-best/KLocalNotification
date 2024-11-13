@@ -124,8 +124,9 @@ actual object LocalNotification {
 
     }
 
-    fun notifyNotificationClickedListener(dataJson: String) {
-        Handler(Looper.getMainLooper()).postDelayed({
+    fun notifyNotificationClickedListener(dataJson: String? = null) {
+        if (dataJson != null) {
+
 
             val type =
                 object :
@@ -135,9 +136,16 @@ actual object LocalNotification {
             if (yourDataMap.isNotEmpty()) {
                 notificationClickedListener?.invoke(yourDataMap)
             }
-        }, 500)
+        }
     }
 
+    fun notifyNotificationOpenAppClicked(dataJson: String? = null) {
+        Handler(Looper.getMainLooper()).postDelayed({
+
+            notifyNotificationClickedListener(dataJson)
+        }, 500)
+
+    }
 //    fun notifyNotificationBackgroundClicked(dataBundle: Bundle) {
 //        if (!dataBundle.isEmpty()) {
 //            // Create a map to store the key-value pairs

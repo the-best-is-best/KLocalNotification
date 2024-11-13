@@ -30,7 +30,7 @@ KLocalNotification is available on `mavenCentral()`.
 ## Installation
 
 ```kotlin
-implementation("io.github.the-best-is-best:klocal-notification:1.0.0-2-rc")
+implementation("io.github.the-best-is-best:klocal-notification:1.0.0-3-rc")
 ```
 
 <br>
@@ -71,21 +71,21 @@ implementation("io.github.the-best-is-best:klocal-notification:1.0.0-2-rc")
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         ....
+        AndroidKMessagingChannel.initialization(this)
         AndroidKMessagingChannel().initChannel("reminder", "reminder")
         AndroidKMessagingChannel().initChannel("reminder1", "reminder1") 
-       
+        ...
+         setContent { App() }
+         // add this code after setContent
         val data = intent.getStringExtra("data")
-        if (data != null) {
-            LocalNotification.notifyNotificationClickedListener(data)
-        }
+        LocalNotification.notifyNotificationOpenAppClicked(data)
     }
-     override fun onNewIntent(intent: Intent) {
+      override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         // Handle new intent when activity is already in the background
         val data = intent.getStringExtra("data")
-        if (data != null) {
-            LocalNotification.notifyNotificationClickedListener(data)
-        }
+        LocalNotification.notifyNotificationClickedListener(data)
+
     }
 }
 ```
@@ -105,16 +105,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     ) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
          // add this
-        UNUserNotificationCenter.current().delegate = self
-        LocalNotification.shared.requestAuthorization { value , error in
-            print("value \(value) error \(error)")   
-        }
+          LocalNotification.shared.doInit(userNotificationCenterDelegate: self)
         ...
         // for received data when app open add this in end
-        if let userInfo = launchOptions?[.remoteNotification] as? [String: AnyObject] {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                LocalNotification.shared.notifyNotificationClicked(data: userInfo)
-            }
+       if let userInfo = launchOptions?[.remoteNotification] as? [String: AnyObject] {
+            LocalNotification.shared.notifyNotificationAppOpenClicked(data: userInfo)
+            
         }
          return true
     }

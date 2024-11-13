@@ -1,5 +1,9 @@
 package io.tbib.klocal_notification
 
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSDate
@@ -12,11 +16,22 @@ import platform.UserNotifications.UNMutableNotificationContent
 import platform.UserNotifications.UNNotificationRequest
 import platform.UserNotifications.UNTimeIntervalNotificationTrigger
 import platform.UserNotifications.UNUserNotificationCenter
+import platform.UserNotifications.UNUserNotificationCenterDelegateProtocol
 import kotlin.coroutines.resume
 
 actual object LocalNotification {
     private var notificationListener: ((Map<Any?, *>) -> Unit)? = null
     private var notificationClickedListener: ((Map<Any?, *>) -> Unit)? = null
+
+    @OptIn(DelicateCoroutinesApi::class)
+    fun init(userNotificationCenterDelegate: UNUserNotificationCenterDelegateProtocol) {
+        GlobalScope.launch {
+            requestAuthorization()
+        }
+        UNUserNotificationCenter.currentNotificationCenter().delegate =
+            userNotificationCenterDelegate
+
+    }
 
     actual fun showNotification(config: NotificationConfig) {
         val content = UNMutableNotificationContent()
@@ -87,10 +102,20 @@ actual object LocalNotification {
         if (data != null)
             notificationListener?.invoke(data)
     }
-
     fun notifyNotificationClicked(data: Map<Any?, *>?) {
         if (data != null)
             notificationClickedListener?.invoke(data)
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    fun notifyNotificationAppOpenClicked(data: Map<Any?, *>?) {
+        GlobalScope.launch {
+
+            if (data != null) {
+                delay(500)
+                notifyNotificationClicked(data)
+            }
+        }
     }
 
     actual suspend fun requestAuthorization(): Boolean {
@@ -115,5 +140,6 @@ actual object LocalNotification {
 
         }
     }
+
 
 }

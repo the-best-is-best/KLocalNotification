@@ -49,7 +49,6 @@ kotlin {
 
             implementation(project(":KLocalNotification"))
             implementation(libs.kotlinx.datetime)
-            implementation(libs.kpermissions)
 
 
         }

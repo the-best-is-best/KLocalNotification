@@ -10,6 +10,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -21,17 +25,19 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.math.absoluteValue
 import kotlin.random.Random
-import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
 internal fun App() = AppTheme {
+    var dataNotification by remember { mutableStateOf<Map<Any?, *>>(mapOf("" to "")) }
+    var dataNotificationClicked by remember { mutableStateOf<Map<Any?, *>>(mapOf("" to "")) }
 
     LocalNotification.setNotificationReceivedListener {
         println("notification received is $it")
+        dataNotification = it
     }
     LocalNotification.setNotificationClickedListener {
-        println("notification clicked data is $it")
+        dataNotificationClicked = it
     }
     LaunchedEffect(Unit) {
         LocalNotification.requestAuthorization()
@@ -73,5 +79,10 @@ internal fun App() = AppTheme {
         }) {
             Text("remove notification")
         }
+        Text("notification received is $dataNotification")
+        Text("notification clicked is $dataNotificationClicked")
+
     }
+
+
 }
