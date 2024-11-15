@@ -2,7 +2,6 @@ package io.tbib.klocal_notification
 
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.Foundation.NSCalendar
@@ -13,7 +12,9 @@ import platform.UserNotifications.UNAuthorizationOptionAlert
 import platform.UserNotifications.UNAuthorizationOptionBadge
 import platform.UserNotifications.UNAuthorizationOptionSound
 import platform.UserNotifications.UNMutableNotificationContent
+import platform.UserNotifications.UNNotificationContent
 import platform.UserNotifications.UNNotificationRequest
+import platform.UserNotifications.UNNotificationTrigger
 import platform.UserNotifications.UNTimeIntervalNotificationTrigger
 import platform.UserNotifications.UNUserNotificationCenter
 import platform.UserNotifications.UNUserNotificationCenterDelegateProtocol
@@ -22,6 +23,9 @@ import kotlin.coroutines.resume
 actual object LocalNotification {
     private var notificationListener: ((Map<Any?, *>) -> Unit)? = null
     private var notificationClickedListener: ((Map<Any?, *>) -> Unit)? = null
+
+    private var lastNotificationData: Map<Any?, *>? = null
+    private var lastClickedNotificationData: Map<Any?, *>? = null
 
     @OptIn(DelicateCoroutinesApi::class)
     fun init(userNotificationCenterDelegate: UNUserNotificationCenterDelegateProtocol) {
@@ -33,6 +37,27 @@ actual object LocalNotification {
 
     }
 
+    fun showNotificationIos(
+        id: String,
+        content: UNNotificationContent,
+        trigger: UNNotificationTrigger? = null
+    ) {
+        // Create a notification request
+        val request = UNNotificationRequest.requestWithIdentifier(
+            id,
+            content,
+            trigger
+        )
+
+        // Schedule or deliver the notification
+        val center = UNUserNotificationCenter.currentNotificationCenter()
+        center.addNotificationRequest(request) { error ->
+            error?.let {
+                println("Error scheduling notification: $it")
+            }
+        }
+    }
+
     actual fun showNotification(config: NotificationConfig) {
         val content = UNMutableNotificationContent()
             .apply {
@@ -40,10 +65,6 @@ actual object LocalNotification {
                 setBody(config.message)
                 config.data?.let { setUserInfo(it) }
             }
-
-
-        // Convert LocalDateTime to NSDate for scheduling
-
 
         // Set up the trigger based on the `schedule` flag
         val trigger = if (config.schedule) {
@@ -66,21 +87,8 @@ actual object LocalNotification {
         } else {
             UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(1.0, repeats = false)
         }
+        showNotificationIos(config.id.toString(), content, trigger)
 
-        // Create a notification request
-        val request = UNNotificationRequest.requestWithIdentifier(
-            config.id.toString(),
-            content,
-            trigger
-        )
-
-        // Schedule or deliver the notification
-        val center = UNUserNotificationCenter.currentNotificationCenter()
-        center.addNotificationRequest(request) { error ->
-            error?.let {
-                println("Error scheduling notification: $it")
-            }
-        }
     }
 
     actual fun removeNotification(notificationId: Int) {
@@ -90,32 +98,40 @@ actual object LocalNotification {
 
     actual fun setNotificationReceivedListener(callback: (Map<Any?, *>) -> Unit) {
         notificationListener = callback
+        lastNotificationData?.let {
+            callback(it)
+        }
+        lastNotificationData = null
 
     }
 
     actual fun setNotificationClickedListener(callback: (Map<Any?, *>) -> Unit) {
         notificationClickedListener = callback
+        lastClickedNotificationData?.let {
+            callback(it)
+        }
+        lastClickedNotificationData = null
 
     }
 
     fun notifyNotificationReceived(data: Map<Any?, *>?) {
-        if (data != null)
+        if (data != null) {
+            lastNotificationData = data
             notificationListener?.invoke(data)
+        }
     }
     fun notifyNotificationClicked(data: Map<Any?, *>?) {
-        if (data != null)
+        if (data != null) {
+            lastClickedNotificationData = data
             notificationClickedListener?.invoke(data)
+        }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     fun notifyNotificationAppOpenClicked(data: Map<Any?, *>?) {
-        GlobalScope.launch {
-
             if (data != null) {
-                delay(500)
                 notifyNotificationClicked(data)
             }
-        }
+
     }
 
     actual suspend fun requestAuthorization(): Boolean {

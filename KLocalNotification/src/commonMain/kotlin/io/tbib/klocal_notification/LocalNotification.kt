@@ -8,7 +8,7 @@ import kotlinx.datetime.toLocalDateTime
 data class NotificationConfig(
     val id: Int,
     val idChannel: String,
-    val title: String = "Notification",
+    val title: String,
     val message: String,
     val smallIcon: String,
     val schedule: Boolean = false,
@@ -21,6 +21,8 @@ expect object LocalNotification {
     fun showNotification(config: NotificationConfig)
     suspend fun requestAuthorization(): Boolean
     fun removeNotification(notificationId: Int)
+
+    @Deprecated("Will be removed soon use only setNotificationClickedListener")
     fun setNotificationReceivedListener(callback: (Map<Any?, *>) -> Unit)
     fun setNotificationClickedListener(callback: (Map<Any?, *>) -> Unit)
 

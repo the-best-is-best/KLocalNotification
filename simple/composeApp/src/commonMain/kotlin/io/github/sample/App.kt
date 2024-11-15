@@ -54,7 +54,7 @@ internal fun App() = AppTheme {
             notificationId = Random.nextInt().absoluteValue
             println("id is $notificationId")
             val currentDateTme =
-                Clock.System.now().plus(5.seconds).toLocalDateTime(TimeZone.currentSystemDefault())
+                Clock.System.now().plus(10.seconds).toLocalDateTime(TimeZone.currentSystemDefault())
             LocalNotification.showNotification(
                 config = NotificationConfig(
                     id = notificationId!!,

@@ -70,7 +70,7 @@ actual object LocalNotification {
                 pendingIntent
             )
         } else {
-            // Show the notification immediately
+
             val notification = notifyNotification(
                 context,
                 config.idChannel,

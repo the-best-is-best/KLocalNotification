@@ -37,15 +37,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Show notifications while app is in the foreground
         let userInfo = notification.request.content.userInfo
         
-        LocalNotification.shared.notifyNotificationReceived(data: userInfo)
+        //LocalNotification.shared.notifyNotificationReceived(data: userInfo)
         completionHandler([.alert, .sound, .badge])
     }
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                  didReceive response: UNNotificationResponse,
                                  withCompletionHandler completionHandler: @escaping () -> Void) {
-        // Handle the notification tap
-        let userInfo = response.notification.request.content.userInfo
+        let notification = response.notification.request
+        
+        
+        let userInfo = notification.content.userInfo
             // Do something based on the type of the notification
+        
         LocalNotification.shared.notifyNotificationClicked(data: userInfo)
         // Always call the completion handler
         completionHandler()
