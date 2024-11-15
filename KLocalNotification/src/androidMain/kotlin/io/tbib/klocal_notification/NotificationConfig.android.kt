@@ -6,8 +6,6 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Handler
-import android.os.Looper
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.gson.Gson
@@ -22,8 +20,11 @@ actual object LocalNotification {
     private var notificationListener: ((Map<Any?, *>) -> Unit)? = null
     private var notificationClickedListener: ((Map<Any?, *>) -> Unit)? = null
 
-    @SuppressLint("MissingPermission", "SuspiciousIndentation")
+    private var lastNotificationData: Map<Any?, *>? = null
+    private var lastClickedNotificationData: Map<Any?, *>? = null
 
+
+    @SuppressLint("MissingPermission")
     actual fun showNotification(config: NotificationConfig) {
 
         val gson = Gson()
@@ -126,11 +127,23 @@ actual object LocalNotification {
 
     actual fun setNotificationReceivedListener(callback: (Map<Any?, *>) -> Unit) {
         notificationListener = callback
+        // If there's saved data, trigger the callback immediately
+        lastNotificationData?.let {
+            callback(it)
+        }
+        lastNotificationData = null
     }
 
     actual fun setNotificationClickedListener(callback: (Map<Any?, *>) -> Unit) {
         notificationClickedListener = callback
+        // If there's saved data, trigger the callback immediately
+        lastClickedNotificationData?.let {
+            callback(it)
+        }
+        lastClickedNotificationData = null
+
     }
+
 
     fun notifyReceivedNotificationListener(dataJson: String) {
         val type =
@@ -139,14 +152,16 @@ actual object LocalNotification {
         val yourDataMap: Map<Any?, *> =
             Gson().fromJson(dataJson, type) // Deserialize back to a map
         if (yourDataMap.isNotEmpty()) {
+            lastNotificationData = yourDataMap
             notificationListener?.invoke(yourDataMap)
+
         }
 
     }
 
     fun notifyNotificationClickedListener(dataJson: String? = null) {
-        if (dataJson != null) {
 
+        if (dataJson != null) {
 
             val type =
                 object :
@@ -154,16 +169,16 @@ actual object LocalNotification {
             val yourDataMap: Map<Any?, *> =
                 Gson().fromJson(dataJson, type) // Deserialize back to a map
             if (yourDataMap.isNotEmpty()) {
+                lastClickedNotificationData = yourDataMap
                 notificationClickedListener?.invoke(yourDataMap)
             }
         }
     }
 
     fun notifyNotificationOpenAppClicked(dataJson: String? = null) {
-        Handler(Looper.getMainLooper()).postDelayed({
 
-            notifyNotificationClickedListener(dataJson)
-        }, 500)
+        notifyNotificationClickedListener(dataJson)
+
 
     }
 
