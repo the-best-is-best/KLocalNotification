@@ -22,7 +22,9 @@ expect object LocalNotification {
     suspend fun requestAuthorization(): Boolean
     fun removeNotification(notificationId: Int)
 
-    @Deprecated("Will be removed soon use only setNotificationClickedListener")
+    /**
+     * this will called only when app reopen
+     */
     fun setNotificationReceivedListener(callback: (Map<Any?, *>) -> Unit)
     fun setNotificationClickedListener(callback: (Map<Any?, *>) -> Unit)
 

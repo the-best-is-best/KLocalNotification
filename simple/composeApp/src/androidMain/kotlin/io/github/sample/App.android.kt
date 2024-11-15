@@ -27,7 +27,7 @@ class AppActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        // Handle new intent when activity is already in the background
+        // Handle new intent when activity is already in the background or foreground
         val data = intent.getStringExtra("data")
         LocalNotification.notifyNotificationClickedListener(data)
 

@@ -40,7 +40,7 @@ tasks.withType<PublishToMavenRepository> {
 extra["packageNameSpace"] = "io.tbib.klocal_notification"
 extra["groupId"] = "io.github.the-best-is-best"
 extra["artifactId"] = "klocal-notification"
-extra["version"] = "1.0.0-3-rc"
+extra["version"] = "1.0.0-4-rc"
 extra["packageName"] = "KLocalNotification"
 extra["packageUrl"] = "https://github.com/the-best-is-best/KLocalNotification"
 extra["packageDescription"] =

@@ -30,7 +30,7 @@ KLocalNotification is available on `mavenCentral()`.
 ## Installation
 
 ```kotlin
-implementation("io.github.the-best-is-best:klocal-notification:1.0.0-3-rc")
+implementation("io.github.the-best-is-best:klocal-notification:1.0.0-4-rc")
 ```
 
 <br>
@@ -82,7 +82,7 @@ implementation("io.github.the-best-is-best:klocal-notification:1.0.0-3-rc")
     }
       override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        // Handle new intent when activity is already in the background
+        // Handle new intent when activity is already in the background or foreground
         val data = intent.getStringExtra("data")
         LocalNotification.notifyNotificationClickedListener(data)
 
@@ -139,7 +139,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 ## How use it
 
 ```kotlin
-   // this lines add it in  App()
+   // Note setNotificationReceivedListener work only when notification clicked when app killed
    LocalNotification.setNotificationReceivedListener {
         println("notification received is $it")
     }

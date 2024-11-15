@@ -145,18 +145,20 @@ actual object LocalNotification {
     }
 
 
-    fun notifyReceivedNotificationListener(dataJson: String) {
-        val type =
-            object :
-                TypeToken<Map<String, String>>() {}.type // Define the type for deserialization
-        val yourDataMap: Map<Any?, *> =
-            Gson().fromJson(dataJson, type) // Deserialize back to a map
-        if (yourDataMap.isNotEmpty()) {
-            lastNotificationData = yourDataMap
-            notificationListener?.invoke(yourDataMap)
+    fun notifyReceivedNotificationListener(dataJson: String?) {
+        if (dataJson != null) {
+            val type =
+                object :
+                    TypeToken<Map<String, String>>() {}.type // Define the type for deserialization
+            val yourDataMap: Map<Any?, *> =
+                Gson().fromJson(dataJson, type) // Deserialize back to a map
+            if (yourDataMap.isNotEmpty()) {
+                lastNotificationData = yourDataMap
+                notificationListener?.invoke(yourDataMap)
+
+            }
 
         }
-
     }
 
     fun notifyNotificationClickedListener(dataJson: String? = null) {
@@ -177,7 +179,7 @@ actual object LocalNotification {
 
     fun notifyNotificationOpenAppClicked(dataJson: String? = null) {
 
-        notifyNotificationClickedListener(dataJson)
+        notifyReceivedNotificationListener(dataJson)
 
 
     }
