@@ -80,8 +80,6 @@ actual object LocalNotification {
                 pendingIntent
             )
             NotificationManagerCompat.from(context).notify(config.id, notification)
-            if (configJson != null)
-                notifyReceivedNotificationListener(configJson)
 
         }
     }
