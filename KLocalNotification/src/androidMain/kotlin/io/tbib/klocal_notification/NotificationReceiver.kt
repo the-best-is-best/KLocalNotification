@@ -5,7 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 
-class NotificationReceiver : BroadcastReceiver() {
+internal class NotificationReceiver : BroadcastReceiver() {
     @SuppressLint("ServiceCast")
     override fun onReceive(context: Context?, intent: Intent?) {
         val data = intent?.getStringExtra("data")

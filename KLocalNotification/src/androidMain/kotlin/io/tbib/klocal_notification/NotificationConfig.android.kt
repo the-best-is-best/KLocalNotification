@@ -2,6 +2,7 @@ package io.tbib.klocal_notification
 
 import android.annotation.SuppressLint
 import android.app.AlarmManager
+import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -21,7 +22,8 @@ actual object LocalNotification {
     private var notificationListener: ((Map<Any?, *>) -> Unit)? = null
     private var notificationClickedListener: ((Map<Any?, *>) -> Unit)? = null
 
-    @SuppressLint("LaunchActivityFromNotification", "MissingPermission", "SuspiciousIndentation")
+    @SuppressLint("MissingPermission", "SuspiciousIndentation")
+
     actual fun showNotification(config: NotificationConfig) {
 
         val gson = Gson()
@@ -37,6 +39,7 @@ actual object LocalNotification {
             putExtra("idChannel", config.idChannel)
             putExtra("icon", config.smallIcon)
             putExtra("data", configJson)
+            putExtra("activityName", AndroidKMessagingChannel.getActivity().javaClass.name)
         }
 
         val pendingIntent = PendingIntent.getBroadcast(
@@ -67,22 +70,40 @@ actual object LocalNotification {
             )
         } else {
             // Show the notification immediately
-            val notification = NotificationCompat.Builder(context, config.idChannel)
-                .setContentTitle(config.title)
-                .setContentText(config.message)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setContentIntent(pendingIntent)
-                .setSmallIcon(getIconResourceIdByName(config.smallIcon))
-                .setAutoCancel(true)
-                .build()
-
-
-
+            val notification = notifyNotification(
+                context,
+                config.idChannel,
+                config.title,
+                config.message,
+                config.smallIcon,
+                pendingIntent
+            )
             NotificationManagerCompat.from(context).notify(config.id, notification)
             if (configJson != null)
                 notifyReceivedNotificationListener(configJson)
 
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    fun notifyNotification(
+        context: Context,
+        idChannel: String,
+        title: String,
+        message: String,
+        smallIcon: String,
+        pendingIntent: PendingIntent? = null
+    ): Notification {
+        return NotificationCompat.Builder(context, idChannel)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent)
+            .setSmallIcon(getIconResourceIdByName(context, smallIcon))
+            .setAutoCancel(true)
+            .build()
+
+
     }
 
 
@@ -93,7 +114,6 @@ actual object LocalNotification {
         val context = AndroidKMessagingChannel.getActivity()
         val alarmManager = AndroidKMessagingChannel.getActivity()
             .getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        // Notification = BroadcastReceiver class
         val intent = Intent(context, NotificationScheduleReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -146,27 +166,6 @@ actual object LocalNotification {
         }, 500)
 
     }
-//    fun notifyNotificationBackgroundClicked(dataBundle: Bundle) {
-//        if (!dataBundle.isEmpty()) {
-//            // Create a map to store the key-value pairs
-//            val dataMap = mutableMapOf<String, String>()
-//
-//            // Iterate over the keys in the Bundle (extras)
-//            for (key in dataBundle.keySet()) {
-//                // Get the value associated with the key
-//                val value = dataBundle.getString(key)
-//                // Add to the map if the value is not null
-//                if (value != null) {
-//                    dataMap[key] = value
-//                }
-//            }
-//
-//            // Convert the map to a JSON string using Gson
-//            val jsonString = Gson().toJson(dataMap)
-//            notifyNotificationClickedListener(jsonString)
-//
-//        }
-    // }
 
     actual suspend fun requestAuthorization(): Boolean {
         return suspendCancellableCoroutine { cont ->
@@ -181,8 +180,7 @@ actual object LocalNotification {
 }
 
 @SuppressLint("DiscouragedApi")
-fun getIconResourceIdByName(iconName: String): Int {
-    val context = AndroidKMessagingChannel.getActivity()
+fun getIconResourceIdByName(context: Context, iconName: String): Int {
     return context.resources.getIdentifier(iconName, "drawable", context.packageName)
 
 }

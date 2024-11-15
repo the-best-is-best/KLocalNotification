@@ -15,11 +15,8 @@ class AppActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         AndroidKMessagingChannel.initialization(this)
-
         // Initialize notification channel and set up the listener
         AndroidKMessagingChannel().initChannel("reminder", "reminder")
-
-
         setContent { App() }
 
         // Handle data from the intent if the activity is started with a notification click
@@ -35,6 +32,8 @@ class AppActivity : ComponentActivity() {
         LocalNotification.notifyNotificationClickedListener(data)
 
     }
+
+
 }
 
 
