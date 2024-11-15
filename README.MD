@@ -30,7 +30,7 @@ KLocalNotification is available on `mavenCentral()`.
 ## Installation
 
 ```kotlin
-implementation("io.github.the-best-is-best:klocal-notification:1.0.0-5-rc")
+implementation("io.github.the-best-is-best:klocal-notification:1.0.0-6-rc")
 ```
 
 <br>
@@ -78,13 +78,13 @@ implementation("io.github.the-best-is-best:klocal-notification:1.0.0-5-rc")
          setContent { App() }
          // add this code after setContent
         val data = intent.getStringExtra("data")
-        LocalNotification.notifyNotificationOpenAppClicked(data)
+        LocalNotification.notifyNotificationListener(data)
     }
       override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         // Handle new intent when activity is already in the background or foreground
         val data = intent.getStringExtra("data")
-        LocalNotification.notifyNotificationClickedListener(data)
+        LocalNotification.notifyNotificationListener(data)
 
     }
 }
@@ -109,7 +109,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         ...
         // for received data when app open add this in end
        if let userInfo = launchOptions?[.remoteNotification] as? [String: AnyObject] {
-            LocalNotification.shared.notifyNotificationAppOpenClicked(data: userInfo)
+            LocalNotification.shared.notifyNotificationListener(data: userInfo)
             
         }
          return true
@@ -125,10 +125,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                  didReceive response: UNNotificationResponse,
                                  withCompletionHandler completionHandler: @escaping () -> Void) {
-        // Handle the notification tap
+ // i think don't need add this
         let userInfo = response.notification.request.content.userInfo
             // Do something based on the type of the notification
-        LocalNotification.shared.notifyNotificationClicked(data: userInfo)
+        LocalNotification.shared.notifyNotificationListener(data: userInfo)
         // Always call the completion handler
         completionHandler()
     }
@@ -153,6 +153,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
 ```kotlin
 
+   var dataNotification by remember { mutableStateOf<Map<Any?, *>>(mapOf("" to "")) }
+
+    LocalNotification.setNotificationListener {
+        println("notification received is $it")
+        dataNotification = it
+    }
+
     LaunchedEffect(Unit) {
         LocalNotification.requestAuthorization()
     }
@@ -168,7 +175,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             notificationId = Random.nextInt().absoluteValue
             println("id is $notificationId")
             val currentDateTme =
-                Clock.System.now().plus(1.minutes).toLocalDateTime(TimeZone.currentSystemDefault())
+                Clock.System.now().plus(10.seconds).toLocalDateTime(TimeZone.currentSystemDefault())
             LocalNotification.showNotification(
                 config = NotificationConfig(
                     id = notificationId!!,
@@ -193,5 +200,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }) {
             Text("remove notification")
         }
-    }  
+        Text("notification received is $dataNotification")
+
+    }
+
 ```

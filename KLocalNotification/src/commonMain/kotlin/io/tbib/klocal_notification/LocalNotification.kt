@@ -22,11 +22,8 @@ expect object LocalNotification {
     suspend fun requestAuthorization(): Boolean
     fun removeNotification(notificationId: Int)
 
-    /**
-     * this will called only when app reopen
-     */
-    fun setNotificationReceivedListener(callback: (Map<Any?, *>) -> Unit)
-    fun setNotificationClickedListener(callback: (Map<Any?, *>) -> Unit)
+    fun setNotificationListener(callback: (Map<Any?, *>) -> Unit)
+
 
 
 }

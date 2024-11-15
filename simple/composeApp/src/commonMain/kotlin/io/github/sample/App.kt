@@ -30,15 +30,12 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 internal fun App() = AppTheme {
     var dataNotification by remember { mutableStateOf<Map<Any?, *>>(mapOf("" to "")) }
-    var dataNotificationClicked by remember { mutableStateOf<Map<Any?, *>>(mapOf("" to "")) }
 
-    LocalNotification.setNotificationReceivedListener {
+    LocalNotification.setNotificationListener {
         println("notification received is $it")
         dataNotification = it
     }
-    LocalNotification.setNotificationClickedListener {
-        dataNotificationClicked = it
-    }
+
     LaunchedEffect(Unit) {
         LocalNotification.requestAuthorization()
     }
@@ -80,7 +77,6 @@ internal fun App() = AppTheme {
             Text("remove notification")
         }
         Text("notification received is $dataNotification")
-        Text("notification clicked is $dataNotificationClicked")
 
     }
 

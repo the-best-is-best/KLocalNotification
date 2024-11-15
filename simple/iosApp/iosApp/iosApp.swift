@@ -1,7 +1,6 @@
 import UIKit
 import ComposeApp
 import UserNotifications
-import UserNotifications
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
@@ -14,9 +13,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     ) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
 
-        // Set the delegate for handling notifications while app is in the foreground
+        // Set the delegate for handling notifications
         LocalNotification.shared.doInit(userNotificationCenterDelegate: self)
-        
 
         // Set the root view controller
         if let window = window {
@@ -24,34 +22,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             window.makeKeyAndVisible()
         }
 
-        if let userInfo = launchOptions?[.remoteNotification] as? [String: AnyObject] {
-            LocalNotification.shared.notifyNotificationAppOpenClicked(data: userInfo)
-            
-        }
+ // i think don't need add this
+//        if let userInfo = launchOptions?[.remoteNotification] as? [String: AnyObject] {
+//            LocalNotification.shared.notifyNotification(data: userInfo)
+//        }
 
         return true
     }
 
     // Handle notifications while the app is in the foreground
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
         // Show notifications while app is in the foreground
-        let userInfo = notification.request.content.userInfo
-        
-        //LocalNotification.shared.notifyNotificationReceived(data: userInfo)
         completionHandler([.alert, .sound, .badge])
     }
-    func userNotificationCenter(_ center: UNUserNotificationCenter,
-                                 didReceive response: UNNotificationResponse,
-                                 withCompletionHandler completionHandler: @escaping () -> Void) {
+
+    // Handle notifications when clicked
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
         let notification = response.notification.request
-        
-        
         let userInfo = notification.content.userInfo
-            // Do something based on the type of the notification
-        
-        LocalNotification.shared.notifyNotificationClicked(data: userInfo)
+
+        // Notify about the notification click
+        LocalNotification.shared.notifyNotification(data: userInfo)
+
         // Always call the completion handler
         completionHandler()
     }
-    
 }

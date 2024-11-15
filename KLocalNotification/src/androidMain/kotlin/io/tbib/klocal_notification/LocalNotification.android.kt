@@ -17,11 +17,11 @@ import java.util.Calendar
 import kotlin.coroutines.resume
 
 actual object LocalNotification {
+//    private var notificationListener: ((Map<Any?, *>) -> Unit)? = null
     private var notificationListener: ((Map<Any?, *>) -> Unit)? = null
-    private var notificationClickedListener: ((Map<Any?, *>) -> Unit)? = null
 
-    private var lastNotificationData: Map<Any?, *>? = null
-    private var lastClickedNotificationData: Map<Any?, *>? = null
+//    private var lastNotificationData: Map<Any?, *>? = null
+    private var lastNotificationListener: Map<Any?, *>? = null
 
 
     @SuppressLint("MissingPermission")
@@ -123,27 +123,18 @@ actual object LocalNotification {
         alarmManager.cancel(pendingIntent)
     }
 
-    actual fun setNotificationReceivedListener(callback: (Map<Any?, *>) -> Unit) {
-        notificationListener = callback
-        // If there's saved data, trigger the callback immediately
-        lastNotificationData?.let {
-            callback(it)
-        }
-        lastNotificationData = null
-    }
-
-    actual fun setNotificationClickedListener(callback: (Map<Any?, *>) -> Unit) {
-        notificationClickedListener = callback
-        // If there's saved data, trigger the callback immediately
-        lastClickedNotificationData?.let {
-            callback(it)
-        }
-        lastClickedNotificationData = null
-
-    }
 
 
-    fun notifyReceivedNotificationListener(dataJson: String?) {
+   actual fun setNotificationListener(callback: (Map<Any?, *>) -> Unit){
+       // If there's saved data, trigger the callback immediately
+       notificationListener = callback
+       lastNotificationListener?.let {
+           callback(it)
+       }
+       lastNotificationListener = null
+   }
+
+    fun notifyNotificationListener(dataJson:String?){
         if (dataJson != null) {
             val type =
                 object :
@@ -151,7 +142,7 @@ actual object LocalNotification {
             val yourDataMap: Map<Any?, *> =
                 Gson().fromJson(dataJson, type) // Deserialize back to a map
             if (yourDataMap.isNotEmpty()) {
-                lastNotificationData = yourDataMap
+                lastNotificationListener = yourDataMap
                 notificationListener?.invoke(yourDataMap)
 
             }
@@ -159,28 +150,7 @@ actual object LocalNotification {
         }
     }
 
-    fun notifyNotificationClickedListener(dataJson: String? = null) {
 
-        if (dataJson != null) {
-
-            val type =
-                object :
-                    TypeToken<Map<String, String>>() {}.type // Define the type for deserialization
-            val yourDataMap: Map<Any?, *> =
-                Gson().fromJson(dataJson, type) // Deserialize back to a map
-            if (yourDataMap.isNotEmpty()) {
-                lastClickedNotificationData = yourDataMap
-                notificationClickedListener?.invoke(yourDataMap)
-            }
-        }
-    }
-
-    fun notifyNotificationOpenAppClicked(dataJson: String? = null) {
-
-        notifyReceivedNotificationListener(dataJson)
-
-
-    }
 
     actual suspend fun requestAuthorization(): Boolean {
         return suspendCancellableCoroutine { cont ->

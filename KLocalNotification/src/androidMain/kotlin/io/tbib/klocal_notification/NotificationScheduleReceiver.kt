@@ -49,10 +49,6 @@ class NotificationScheduleReceiver : BroadcastReceiver() {
                 clickPendingIntent
             )
             NotificationManagerCompat.from(ctx).notify(id, notification)
-
-        }
-        if (title == null && message == null && configJson != null) {
-                LocalNotification.notifyReceivedNotificationListener(configJson)
         }
 
     }

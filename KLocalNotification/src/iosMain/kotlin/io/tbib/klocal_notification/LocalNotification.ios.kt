@@ -8,6 +8,8 @@ import platform.Foundation.NSCalendar
 import platform.Foundation.NSDate
 import platform.Foundation.NSDateComponents
 import platform.Foundation.timeIntervalSinceNow
+import platform.UIKit.UIApplication
+import platform.UIKit.UIApplicationState
 import platform.UserNotifications.UNAuthorizationOptionAlert
 import platform.UserNotifications.UNAuthorizationOptionBadge
 import platform.UserNotifications.UNAuthorizationOptionSound
@@ -22,10 +24,8 @@ import kotlin.coroutines.resume
 
 actual object LocalNotification {
     private var notificationListener: ((Map<Any?, *>) -> Unit)? = null
-    private var notificationClickedListener: ((Map<Any?, *>) -> Unit)? = null
 
     private var lastNotificationData: Map<Any?, *>? = null
-    private var lastClickedNotificationData: Map<Any?, *>? = null
 
     @OptIn(DelicateCoroutinesApi::class)
     fun init(userNotificationCenterDelegate: UNUserNotificationCenterDelegateProtocol) {
@@ -96,7 +96,8 @@ actual object LocalNotification {
         center.removePendingNotificationRequestsWithIdentifiers(listOf(notificationId.toString()))
     }
 
-    actual fun setNotificationReceivedListener(callback: (Map<Any?, *>) -> Unit) {
+    actual fun setNotificationListener(callback: (Map<Any?, *>) -> Unit){
+
         notificationListener = callback
         lastNotificationData?.let {
             callback(it)
@@ -105,34 +106,13 @@ actual object LocalNotification {
 
     }
 
-    actual fun setNotificationClickedListener(callback: (Map<Any?, *>) -> Unit) {
-        notificationClickedListener = callback
-        lastClickedNotificationData?.let {
-            callback(it)
-        }
-        lastClickedNotificationData = null
-
-    }
-
-    fun notifyNotificationReceived(data: Map<Any?, *>?) {
+    fun notifyNotification(data: Map<Any?, *>?) {
         if (data != null) {
             lastNotificationData = data
             notificationListener?.invoke(data)
         }
     }
-    fun notifyNotificationClicked(data: Map<Any?, *>?) {
-        if (data != null) {
-            lastClickedNotificationData = data
-            notificationClickedListener?.invoke(data)
-        }
-    }
 
-    fun notifyNotificationAppOpenClicked(data: Map<Any?, *>?) {
-            if (data != null) {
-                notifyNotificationClicked(data)
-            }
-
-    }
 
     actual suspend fun requestAuthorization(): Boolean {
         return suspendCancellableCoroutine { cont ->
