@@ -36,7 +36,7 @@ class NotificationScheduleReceiver : BroadcastReceiver() {
         val id: Int = intent.getIntExtra("id", 0)
         val idChannel: String? = intent.getStringExtra("idChannel")
         val smallIcon: String = intent.getStringExtra("icon") ?: ""
-        val configJson = intent.getStringExtra("data")
+//        val configJson = intent.getStringExtra("data")
 
 
         if (title != null && message != null) {
