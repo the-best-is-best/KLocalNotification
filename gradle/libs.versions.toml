@@ -1,7 +1,7 @@
 [versions]
 coreKtx = "1.15.0"
-kotlin = "2.0.21"
-compose = "1.7.0"
+kotlin = "2.1.10"
+compose = "1.7.3"
 agp = "8.7.1"
 androidx-activityCompose = "1.9.3"
 androidx-uiTest = "1.7.4"

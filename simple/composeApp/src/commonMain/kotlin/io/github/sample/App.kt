@@ -33,7 +33,7 @@ internal fun App() = AppTheme {
 
     LocalNotification.setNotificationListener {
         println("notification received is $it")
-        dataNotification = it
+        dataNotification = it ?: mapOf("" to "")
     }
 
     LaunchedEffect(Unit) {

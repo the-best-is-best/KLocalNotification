@@ -22,7 +22,7 @@ expect object LocalNotification {
     suspend fun requestAuthorization(): Boolean
     fun removeNotification(notificationId: Int)
 
-    fun setNotificationListener(callback: (Map<Any?, *>) -> Unit)
+    fun setNotificationListener(callback: (Map<Any?, *>?) -> Unit)
 
 
 

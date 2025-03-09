@@ -13,6 +13,8 @@ plugins {
     id("maven-publish")
     id("signing")
     alias(libs.plugins.maven.publish)
+    id("io.github.ttypic.swiftklib") version "0.6.4"
+
 }
 
 
@@ -99,6 +101,8 @@ signing {
     sign(publishing.publications)
 }
 
+val packageName = extra["packageName"].toString()
+
 
 kotlin {
     jvmToolchain(17)
@@ -123,11 +127,26 @@ kotlin {
     listOf(
         iosX64(),
         iosArm64(),
-        iosSimulatorArm64()
+        iosSimulatorArm64(),
+        macosX64(),
+        macosArm64(),
+        tvosX64(),
+        tvosArm64(),
+        tvosSimulatorArm64(),
+        watchosX64(),
+        watchosArm64(),
+        watchosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = extra["packageNameSpace"].toString()
+            baseName = packageName
             isStatic = true
+        }
+        it.compilations {
+            val main by getting {
+                cinterops {
+                    create("MyLocalNotification")
+                }
+            }
         }
     }
 
@@ -223,3 +242,10 @@ dependencies {
 //        }
 //    }
 //}
+
+swiftklib {
+    create("MyLocalNotification") {
+        path = file("native/my_local_notification")
+        packageName("io.github.native.my_local_notification")
+    }
+}

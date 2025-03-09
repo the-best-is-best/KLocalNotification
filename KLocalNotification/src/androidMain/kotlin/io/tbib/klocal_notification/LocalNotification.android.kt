@@ -125,7 +125,7 @@ actual object LocalNotification {
 
 
 
-   actual fun setNotificationListener(callback: (Map<Any?, *>) -> Unit){
+   actual fun setNotificationListener(callback: (Map<Any?, *>?) -> Unit){
        // If there's saved data, trigger the callback immediately
        notificationListener = callback
        lastNotificationListener?.let {
