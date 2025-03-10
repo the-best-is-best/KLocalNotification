@@ -30,7 +30,7 @@ KLocalNotification is available on `mavenCentral()`.
 ## Installation
 
 ```kotlin
-implementation("io.github.the-best-is-best:klocal-notification:1.0.0-6-rc")
+implementation("io.github.the-best-is-best:klocal-notification:1.0.1")
 ```
 
 <br>
