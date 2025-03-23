@@ -1,8 +1,8 @@
 <h1 align="center">KLocalNotification</h1><br>
 <div align="center">
 <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"/></a>
-<a href="https://android-arsenal.com/api?level=23" rel="nofollow">
-    <img alt="API" src="https://img.shields.io/badge/API-23%2B-brightgreen.svg?style=flat" style="max-width: 100%;">
+<a href="https://android-arsenal.com/api?level=21" rel="nofollow">
+    <img alt="API" src="https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat" style="max-width: 100%;">
 </a>
   <img src="https://img.shields.io/badge/Platform-Android-brightgreen.svg?logo=android" alt="Badge Android" />
   <img src="https://img.shields.io/badge/iOS-12%2B-blue.svg?logo=apple" alt="iOS 12+ Badge" />
@@ -30,7 +30,7 @@ KLocalNotification is available on `mavenCentral()`.
 ## Installation
 
 ```kotlin
-implementation("io.github.the-best-is-best:klocal-notification:1.0.1")
+implementation("io.github.the-best-is-best:klocal-notification:1.0.2")
 ```
 
 <br>
