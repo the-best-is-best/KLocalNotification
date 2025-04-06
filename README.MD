@@ -164,9 +164,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         println("notification received is $it")
         dataNotification = it
     }
-
+    val localNotificationRequest
     LaunchedEffect(Unit) {
-        LocalNotification.requestAuthorization()
+        localNotificationRequest.launch()
     }
     var notificationId: Int? = null
     Column(
