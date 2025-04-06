@@ -1,25 +1,19 @@
 package io.tbib.klocal_notification
 
-import io.github.native.my_local_notification.MyLocalNotification
+import io.github.native.kiosnotification.KIOSNotification
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.UnsafeNumber
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import platform.Foundation.NSDate
 import platform.Foundation.dateWithTimeIntervalSince1970
-import platform.UserNotifications.UNAuthorizationOptionAlert
-import platform.UserNotifications.UNAuthorizationOptionBadge
-import platform.UserNotifications.UNAuthorizationOptionSound
 import platform.UserNotifications.UNUserNotificationCenter
 import platform.UserNotifications.UNUserNotificationCenterDelegateProtocol
-import kotlin.coroutines.resume
 
 @OptIn(ExperimentalForeignApi::class)
 actual object LocalNotification {
     fun init(userNotificationCenterDelegate: UNUserNotificationCenterDelegateProtocol) {
-        MyLocalNotification.requestAuthorization()
+        KIOSNotification.requestAuthorization()
         UNUserNotificationCenter.currentNotificationCenter().delegate =
             userNotificationCenterDelegate
 
@@ -28,7 +22,7 @@ actual object LocalNotification {
 
     actual fun showNotification(config: NotificationConfig) {
 
-        MyLocalNotification.showNotificationWithId(
+        KIOSNotification.showNotificationWithId(
             config.id.toString(),
             config.title,
             config.message,
@@ -46,40 +40,17 @@ actual object LocalNotification {
     }
 
     actual fun setNotificationListener(callback: (Map<Any?, *>?) -> Unit){
-        MyLocalNotification.setNotificationListenerWithCallback(callback)
+        KIOSNotification.setNotificationListenerWithCallback(callback)
     }
 
     fun notifyNotification(data: Map<Any?, *>?) {
         if (data != null) {
-           MyLocalNotification.notifyNotificationWithData(data)
+            KIOSNotification.notifyNotificationWithData(data)
         }
     }
 
 
-    @OptIn(UnsafeNumber::class)
-    actual suspend fun requestAuthorization(): Boolean {
-        return suspendCancellableCoroutine { cont ->
 
-            val center = UNUserNotificationCenter.currentNotificationCenter()
-
-            center.requestAuthorizationWithOptions(
-                options = UNAuthorizationOptionAlert or UNAuthorizationOptionSound or UNAuthorizationOptionBadge,
-                completionHandler = { granted, error ->
-                    if (error != null) {
-                        // Handle error
-                        cont.resume(false)
-                    } else if (granted) {
-                        // Permission granted
-                        cont.resume(granted)
-                    } else {
-                        // Permission denied
-                        cont.resume(false)
-                    }
-                }
-            )
-
-        }
-    }
 
 
 }

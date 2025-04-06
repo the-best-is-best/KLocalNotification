@@ -17,9 +17,11 @@ data class NotificationConfig(
     val data: Map<Any?, *>? = null
 )
 
+
 expect object LocalNotification {
     fun showNotification(config: NotificationConfig)
-    suspend fun requestAuthorization(): Boolean
+
+
     fun removeNotification(notificationId: Int)
 
     fun setNotificationListener(callback: (Map<Any?, *>?) -> Unit)

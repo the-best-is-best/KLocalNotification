@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.sample.theme.AppTheme
 import io.tbib.klocal_notification.LocalNotification
+import io.tbib.klocal_notification.LocalNotificationRequestAuthorization
 import io.tbib.klocal_notification.NotificationConfig
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -35,10 +36,14 @@ internal fun App() = AppTheme {
         println("notification received is $it")
         dataNotification = it ?: mapOf("" to "")
     }
+    val localNotificationRequest = LocalNotificationRequestAuthorization {
+        println("permission is $it")
+    }
 
     LaunchedEffect(Unit) {
-        LocalNotification.requestAuthorization()
+        localNotificationRequest.launch()
     }
+
     var notificationId: Int? = null
     Column(
         modifier = Modifier
@@ -51,7 +56,7 @@ internal fun App() = AppTheme {
             notificationId = Random.nextInt().absoluteValue
             println("id is $notificationId")
             val currentDateTme =
-                Clock.System.now().plus(10.seconds).toLocalDateTime(TimeZone.currentSystemDefault())
+                Clock.System.now().plus(1.seconds).toLocalDateTime(TimeZone.currentSystemDefault())
             LocalNotification.showNotification(
                 config = NotificationConfig(
                     id = notificationId!!,

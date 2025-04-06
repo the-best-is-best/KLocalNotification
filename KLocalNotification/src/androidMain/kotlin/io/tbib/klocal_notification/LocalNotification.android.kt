@@ -11,11 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import io.github.kpermissions.enum.EnumAppPermission
-import io.github.kpermissions.handler.PermissionHandler
-import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.Calendar
-import kotlin.coroutines.resume
 
 actual object LocalNotification {
 //    private var notificationListener: ((Map<Any?, *>) -> Unit)? = null
@@ -150,18 +146,6 @@ actual object LocalNotification {
 
             }
 
-        }
-    }
-
-
-
-    actual suspend fun requestAuthorization(): Boolean {
-        return suspendCancellableCoroutine { cont ->
-
-            val permission = PermissionHandler()
-            permission.requestPermission(EnumAppPermission.NOTIFICATION) { granted ->
-                cont.resume(granted)
-            }
         }
     }
 

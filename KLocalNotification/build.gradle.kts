@@ -8,12 +8,11 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.android.library)
-//    alias(libs.plugins.compose.compiler)
-//    alias(libs.plugins.compose)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.compose)
     id("maven-publish")
     id("signing")
     alias(libs.plugins.maven.publish)
-    id("io.github.ttypic.swiftklib") version "0.6.4"
 
 }
 
@@ -42,7 +41,7 @@ tasks.withType<PublishToMavenRepository> {
 extra["packageNameSpace"] = "io.tbib.klocal_notification"
 extra["groupId"] = "io.github.the-best-is-best"
 extra["artifactId"] = "klocal-notification"
-extra["version"] = "1.0.2"
+extra["version"] = "1.1.0"
 extra["packageName"] = "KLocalNotification"
 extra["packageUrl"] = "https://github.com/the-best-is-best/KLocalNotification"
 extra["packageDescription"] =
@@ -128,31 +127,35 @@ kotlin {
         iosX64(),
         iosArm64(),
         iosSimulatorArm64(),
-        macosX64(),
-        macosArm64(),
-        tvosX64(),
-        tvosArm64(),
-        tvosSimulatorArm64(),
-        watchosX64(),
-        watchosArm64(),
-        watchosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
             baseName = packageName
             isStatic = true
         }
-        it.compilations {
-            val main by getting {
-                cinterops {
-                    create("MyLocalNotification")
+        it.compilations.getByName("main") {
+            val defFileName = when (target.name) {
+                "iosX64" -> "iosX64.def"
+                "iosArm64" -> "iosArm64.def"
+                "iosSimulatorArm64" -> "iosSimulatorArm64.def"
+
+                else -> throw IllegalStateException("Unsupported target: ${target.name}")
+            }
+
+            val defFile = project.file("native/$defFileName")
+            if (defFile.exists()) {
+                cinterops.create("FirebaseAnalytics") {
+                    defFile(defFile)
+                    packageName = "io.github.native.kiosnotification"
                 }
+            } else {
+                logger.warn("Def file not found for target ${target.name}: ${defFile.absolutePath}")
             }
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-//            implementation(compose.runtime)
+            implementation(compose.runtime)
 //            implementation(compose.foundation)
 //            implementation(compose.material3)
 //            implementation(compose.components.resources)
@@ -172,9 +175,12 @@ kotlin {
         androidMain.dependencies {
 //            implementation(compose.uiTooling)
 //            implementation(libs.androidx.activityCompose)
-            implementation(libs.kpermissions)
+            //implementation(libs.kpermissions)
             implementation(libs.gson)
             implementation(libs.androidx.core.ktx)
+            implementation(libs.androidx.startup.runtime)
+            implementation(libs.accompanist.permissions)
+
 
         }
 
@@ -243,9 +249,68 @@ dependencies {
 //    }
 //}
 
-swiftklib {
-    create("MyLocalNotification") {
-        path = file("native/my_local_notification")
-        packageName("io.github.native.my_local_notification")
+
+abstract class GenerateDefFilesTask : DefaultTask() {
+
+    @get:Input
+    abstract val packageName: Property<String>
+
+    @get:OutputDirectory
+    abstract val interopDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        // Ensure the directory exists
+        interopDir.get().asFile.mkdirs()
+
+        // Constants
+
+        // Map targets to their respective paths
+        val targetToPath = mapOf(
+            "iosX64" to "ios-arm64_x86_64-simulator",
+            "iosArm64" to "ios-arm64",
+            "iosSimulatorArm64" to "ios-arm64_x86_64-simulator",
+//            "macosX64" to "macos-arm64_x86_64",
+//            "macosArm64" to "macos-arm64_x86_64",
+//            "tvosArm64" to "tvos-arm64",
+//            "tvosX64" to "tvos-arm64_x86_64-simulator",
+//            "tvosSimulatorArm64" to "tvos-arm64_x86_64-simulator",
+        )
+
+        // Helper function to generate header paths
+        fun headerPath(target: String): String {
+            return interopDir.dir("libs/${targetToPath[target]}/KIOSNotification-Swift.h")
+                .get().asFile.absolutePath
+        }
+
+        // Generate headerPaths dynamically
+        val headerPaths = targetToPath.mapValues { (target, _) ->
+            headerPath(target)
+        }
+
+        // List of targets derived from targetToPath keys
+        val iosTargets = targetToPath.keys.toList()
+
+        // Loop through the targets and create the .def files
+        iosTargets.forEach { target ->
+            val headerPath = headerPaths[target] ?: return@forEach
+            val defFile = File(interopDir.get().asFile, "$target.def")
+
+            // Generate the content for the .def file
+            val content = """
+                language = Objective-C
+                package = ${packageName.get()}
+                headers = $headerPath
+            """.trimIndent()
+
+            // Write content to the .def file
+            defFile.writeText(content)
+            println("Generated: ${defFile.absolutePath} with headers = $headerPath")
+        }
     }
+}
+// Register the task within the Gradle build
+tasks.register<GenerateDefFilesTask>("generateDefFiles") {
+    packageName.set("io.github.native.kiosnotification")
+    interopDir.set(project.layout.projectDirectory.dir("native"))
 }
