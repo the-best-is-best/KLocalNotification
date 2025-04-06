@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		411823DF2DA3200B00C7507D /* KIOSNotification in Frameworks */ = {isa = PBXBuildFile; productRef = 411823DE2DA3200B00C7507D /* KIOSNotification */; };
+		411823E22DA3214A00C7507D /* KIOSNotification in Frameworks */ = {isa = PBXBuildFile; productRef = 411823E12DA3214A00C7507D /* KIOSNotification */; };
 		A93A953B29CC810C00F8E227 /* iosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93A953A29CC810C00F8E227 /* iosApp.swift */; };
 		A93A953F29CC810D00F8E227 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A93A953E29CC810D00F8E227 /* Assets.xcassets */; };
 		A93A954229CC810D00F8E227 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A93A954129CC810D00F8E227 /* Preview Assets.xcassets */; };
@@ -26,6 +28,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				411823DF2DA3200B00C7507D /* KIOSNotification in Frameworks */,
+				411823E22DA3214A00C7507D /* KIOSNotification in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -120,6 +124,9 @@
 				Base,
 			);
 			mainGroup = A93A952E29CC810C00F8E227;
+			packageReferences = (
+				411823E02DA3214A00C7507D /* XCRemoteSwiftPackageReference "KIOSNotification" */,
+			);
 			productRefGroup = A93A953829CC810C00F8E227 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -309,9 +316,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = io.gitub.io.iosApp;
 				PRODUCT_NAME = lib;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -337,9 +348,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = io.gitub.io.iosApp;
 				PRODUCT_NAME = lib;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -365,6 +380,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		411823DD2DA3200B00C7507D /* XCRemoteSwiftPackageReference "KIOSNotification" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/the-best-is-best/KIOSNotification";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		411823E02DA3214A00C7507D /* XCRemoteSwiftPackageReference "KIOSNotification" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/the-best-is-best/KIOSNotification";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		411823DE2DA3200B00C7507D /* KIOSNotification */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 411823DD2DA3200B00C7507D /* XCRemoteSwiftPackageReference "KIOSNotification" */;
+			productName = KIOSNotification;
+		};
+		411823E12DA3214A00C7507D /* KIOSNotification */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 411823E02DA3214A00C7507D /* XCRemoteSwiftPackageReference "KIOSNotification" */;
+			productName = KIOSNotification;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A93A952F29CC810C00F8E227 /* Project object */;
 }

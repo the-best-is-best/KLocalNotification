@@ -33,6 +33,11 @@ KLocalNotification is available on `mavenCentral()`.
 implementation("io.github.the-best-is-best:klocal-notification:1.1.0")
 ```
 
+### ✅ **Install via SPM
+
+You can install **KIOSNotification** directly using **Swift Package Manager (SPM)** from:  
+🔗 [KIOSNotification-iOS on GitHub](https://github.com/the-best-is-best/KIOSNotification)
+
 <br>
 
 - Note add permissions notification needed android and ios
