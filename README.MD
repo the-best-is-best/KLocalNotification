@@ -114,7 +114,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         ...
         // for received data when app open add this in end
        if let userInfo = launchOptions?[.remoteNotification] as? [String: AnyObject] {
-            LocalNotification.shared.notifyNotificationListener(data: userInfo)
+            LocalNotification.shared.notifyNotification(data: userInfo)
             
         }
          return true
@@ -124,7 +124,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Show notifications while app is in the foreground
         let userInfo = notification.request.content.userInfo
         
-        LocalNotification.shared.notifyNotificationReceived(data: userInfo)
+        LocalNotification.shared.notifyNotification(data: userInfo)
         completionHandler([.alert, .sound, .badge])
     }
     func userNotificationCenter(_ center: UNUserNotificationCenter,
@@ -133,7 +133,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
  // i think don't need add this
         let userInfo = response.notification.request.content.userInfo
             // Do something based on the type of the notification
-        LocalNotification.shared.notifyNotificationListener(data: userInfo)
+        LocalNotification.shared.notifyNotification(data: userInfo)
         // Always call the completion handler
         completionHandler()
     }

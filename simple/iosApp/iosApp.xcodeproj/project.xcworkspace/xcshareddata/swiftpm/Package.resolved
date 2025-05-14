@@ -1,0 +1,15 @@
+{
+  "originHash" : "1e97f404d3dee16d1ad51c74aaa9f7aa581b40ae8490dc66f8af53494350841e",
+  "pins" : [
+    {
+      "identity" : "kiosnotification",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/the-best-is-best/KIOSNotification",
+      "state" : {
+        "branch" : "main",
+        "revision" : "31e6c340c855057e748ed0997ee5ae590e570cc3"
+      }
+    }
+  ],
+  "version" : 3
+}
