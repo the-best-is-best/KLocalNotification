@@ -31,11 +31,15 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 internal fun App() = AppTheme {
     var dataNotification by remember { mutableStateOf<Map<Any?, *>>(mapOf("" to "")) }
+    LaunchedEffect(Unit) {
 
-    LocalNotification.setNotificationListener {
-        println("notification received is $it")
-        dataNotification = it ?: mapOf("" to "")
+        LocalNotification.payloadFlow.collect {
+            println("notification received is $it")
+            dataNotification = it
+        }
     }
+
+
     val localNotificationRequest = LocalNotificationRequestAuthorization {
         println("permission is $it")
     }
@@ -56,7 +60,7 @@ internal fun App() = AppTheme {
             notificationId = Random.nextInt().absoluteValue
             println("id is $notificationId")
             val currentDateTme =
-                Clock.System.now().plus(1.seconds).toLocalDateTime(TimeZone.currentSystemDefault())
+                Clock.System.now().plus(5.seconds).toLocalDateTime(TimeZone.currentSystemDefault())
             LocalNotification.showNotification(
                 config = NotificationConfig(
                     id = notificationId!!,
@@ -64,7 +68,7 @@ internal fun App() = AppTheme {
                     title = "Test title",
                     message = "Test Message",
                     smallIcon = "ic_notification",
-                    data = mapOf("test" to 1),
+                    data = mapOf("test" to 123),
                     schedule = true,
                     dateTime = currentDateTme,
                 )

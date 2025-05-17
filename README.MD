@@ -30,7 +30,7 @@ KLocalNotification is available on `mavenCentral()`.
 ## Installation
 
 ```kotlin
-implementation("io.github.the-best-is-best:klocal-notification:1.1.0")
+implementation("io.github.the-best-is-best:klocal-notification:1.2.0")
 ```
 
 ### ✅ **Install via SPM
@@ -83,13 +83,13 @@ You can install **KIOSNotification** directly using **Swift Package Manager (SPM
          setContent { App() }
          // add this code after setContent
         val data = intent.getStringExtra("data")
-        LocalNotification.notifyNotificationListener(data)
+        LocalNotification.notifyPayloadListeners(data)
     }
       override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         // Handle new intent when activity is already in the background or foreground
         val data = intent.getStringExtra("data")
-        LocalNotification.notifyNotificationListener(data)
+        LocalNotification.notifyPayloadListeners(data)
 
     }
 }
@@ -111,12 +111,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         window = UIWindow(frame: UIScreen.main.bounds)
          // add this
           LocalNotification.shared.doInit(userNotificationCenterDelegate: self)
-        ...
-        // for received data when app open add this in end
-       if let userInfo = launchOptions?[.remoteNotification] as? [String: AnyObject] {
-            LocalNotification.shared.notifyNotification(data: userInfo)
-            
-        }
+        ...      
          return true
     }
     // Handle notifications while the app is in the foreground
@@ -133,8 +128,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
  // i think don't need add this
         let userInfo = response.notification.request.content.userInfo
             // Do something based on the type of the notification
-        LocalNotification.shared.notifyNotification(data: userInfo)
-        // Always call the completion handler
+         Task {
+            do {
+                try await LocalNotification.shared.notifyPayloadListeners(data: userInfo)
+            } catch {
+                print("Error notifying payload listeners: \(error)")
+            }
+        }        // Always call the completion handler
         completionHandler()
     }
 

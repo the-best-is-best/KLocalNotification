@@ -21,7 +21,7 @@ class AppActivity : ComponentActivity() {
 
         // Handle data from the intent if the activity is started with a notification click
         val data = intent.getStringExtra("data")
-        LocalNotification.notifyNotificationListener(data)
+        LocalNotification.notifyPayloadListeners(data)
 
     }
 
@@ -29,7 +29,7 @@ class AppActivity : ComponentActivity() {
         super.onNewIntent(intent)
         // Handle new intent when activity is already in the background or foreground
         val data = intent.getStringExtra("data")
-        LocalNotification.notifyNotificationListener(data)
+        LocalNotification.notifyPayloadListeners(data)
 
     }
 
