@@ -5,7 +5,7 @@
     <img alt="API" src="https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat" style="max-width: 100%;">
 </a>
   <img src="https://img.shields.io/badge/Platform-Android-brightgreen.svg?logo=android" alt="Badge Android" />
-  <img src="https://img.shields.io/badge/iOS-13%2B-blue.svg?logo=apple" alt="iOS 13+ Badge" />
+  <img src="https://img.shields.io/badge/iOS-12%2B-blue.svg?logo=apple" alt="iOS 12+ Badge" />
 
 <a href="https://github.com/the-best-is-best/"><img alt="Profile" src="https://img.shields.io/badge/github-%23181717.svg?&style=for-the-badge&logo=github&logoColor=white" height="20"/></a>
 </div>
@@ -30,7 +30,7 @@ KLocalNotification is available on `mavenCentral()`.
 ## Installation
 
 ```kotlin
-implementation("io.github.the-best-is-best:klocal-notification:1.2.0")
+implementation("io.github.the-best-is-best:klocal-notification:1.2.1")
 ```
 
 ### ✅ **Install via SPM
@@ -128,13 +128,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
  // i think don't need add this
         let userInfo = response.notification.request.content.userInfo
             // Do something based on the type of the notification
-         Task {
-            do {
-                try await LocalNotification.shared.notifyPayloadListeners(data: userInfo)
-            } catch {
-                print("Error notifying payload listeners: \(error)")
-            }
-        }        // Always call the completion handler
+        LocalNotification.shared.notifyPayloadListeners(data: userInfo)
+             // Always call the completion handler
         completionHandler()
     }
 

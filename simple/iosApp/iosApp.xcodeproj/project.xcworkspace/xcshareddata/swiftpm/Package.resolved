@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/the-best-is-best/KIOSNotification",
       "state" : {
-        "revision" : "6a7b18e957ad38ba832c36ed4677fc07c0d9ed1f",
-        "version" : "0.1.1"
+        "revision" : "3db9f01248fb24786b7c1206ede4ff7d2bf3c649",
+        "version" : "0.1.2"
       }
     }
   ],
