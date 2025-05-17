@@ -1,0 +1,3 @@
+language = Objective-C
+package = io.github.native.kiosnotification
+headers = /Users/michelleraouf/Desktop/kmm/KLocalNotification/KLocalNotification/native/libs/KIOSNotification-Swift.h
