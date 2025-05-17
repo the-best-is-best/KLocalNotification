@@ -144,26 +144,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 ## How use it
 
 ```kotlin
-   // Note setNotificationReceivedListener work only when notification clicked when app killed
-   LocalNotification.setNotificationReceivedListener {
-        println("notification received is $it")
-    }
-    LocalNotification.setNotificationClickedListener {
-        println("notification clicked data is $it")
-    }
-    
-```
-
-- Example functionality use
-
-```kotlin
 
    var dataNotification by remember { mutableStateOf<Map<Any?, *>>(mapOf("" to "")) }
 
-    LocalNotification.setNotificationListener {
-        println("notification received is $it")
-        dataNotification = it
+ LaunchedEffect(Unit) {
+        LocalNotification.payloadFlow.collect {
+            println("notification received is $it")
+            dataNotification = it
+        }
     }
+
+   
     val localNotificationRequest
     LaunchedEffect(Unit) {
         localNotificationRequest.launch()
