@@ -41,7 +41,7 @@ tasks.withType<PublishToMavenRepository> {
 extra["packageNameSpace"] = "io.tbib.klocal_notification"
 extra["groupId"] = "io.github.the-best-is-best"
 extra["artifactId"] = "klocal-notification"
-extra["version"] = "1.1.0"
+extra["version"] = "1.2.0"
 extra["packageName"] = "KLocalNotification"
 extra["packageUrl"] = "https://github.com/the-best-is-best/KLocalNotification"
 extra["packageDescription"] =
@@ -127,6 +127,8 @@ kotlin {
         iosX64(),
         iosArm64(),
         iosSimulatorArm64(),
+        macosX64(),
+        macosArm64()
     ).forEach {
         it.binaries.framework {
             baseName = packageName
@@ -137,6 +139,8 @@ kotlin {
                 "iosX64" -> "iosX64.def"
                 "iosArm64" -> "iosArm64.def"
                 "iosSimulatorArm64" -> "iosSimulatorArm64.def"
+                "macosX64" -> "macosX64.def"
+                "macosArm64" -> "macosArm64.def"
 
                 else -> throw IllegalStateException("Unsupported target: ${target.name}")
             }
@@ -270,8 +274,8 @@ abstract class GenerateDefFilesTask : DefaultTask() {
             "iosX64" to "ios-arm64_x86_64-simulator",
             "iosArm64" to "ios-arm64",
             "iosSimulatorArm64" to "ios-arm64_x86_64-simulator",
-//            "macosX64" to "macos-arm64_x86_64",
-//            "macosArm64" to "macos-arm64_x86_64",
+            "macosX64" to "macos-arm64_x86_64",
+            "macosArm64" to "macos-arm64_x86_64",
 //            "tvosArm64" to "tvos-arm64",
 //            "tvosX64" to "tvos-arm64_x86_64-simulator",
 //            "tvosSimulatorArm64" to "tvos-arm64_x86_64-simulator",
@@ -279,7 +283,7 @@ abstract class GenerateDefFilesTask : DefaultTask() {
 
         // Helper function to generate header paths
         fun headerPath(target: String): String {
-            return interopDir.dir("libs/${targetToPath[target]}/KIOSNotification-Swift.h")
+            return interopDir.dir("libs/KIOSNotification-Swift.h")
                 .get().asFile.absolutePath
         }
 

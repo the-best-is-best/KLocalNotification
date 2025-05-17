@@ -1,5 +1,6 @@
 package io.tbib.klocal_notification
 
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -24,8 +25,9 @@ expect object LocalNotification {
 
     fun removeNotification(notificationId: Int)
 
-    fun setNotificationListener(callback: (Map<Any?, *>?) -> Unit)
 
+    val payloadFlow: SharedFlow<Map<Any?, *>>
+//    suspend fun notifyPayloadListeners(data: Map<Any?, *>)
 
 
 }

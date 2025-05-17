@@ -18,12 +18,14 @@
         <receiver
             android:name=".NotificationScheduleReceiver"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="true"
+            android:permission="android.permission.POST_NOTIFICATIONS" />
 
         <receiver
             android:name=".NotificationReceiver"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="true"
+            android:permission="android.permission.POST_NOTIFICATIONS" />
 
         <!--        <provider-->
         <!--            android:name="androidx.startup.InitializationProvider"-->

@@ -10,7 +10,7 @@ internal class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         val data = intent?.getStringExtra("data")
         if (data != null) {
-            LocalNotification.notifyNotificationListener(data)
+            LocalNotification.notifyPayloadListeners(data)
         }
     }
 }

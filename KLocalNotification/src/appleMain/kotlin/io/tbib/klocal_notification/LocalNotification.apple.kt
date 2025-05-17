@@ -2,6 +2,8 @@ package io.tbib.klocal_notification
 
 import io.github.native.kiosnotification.KIOSNotification
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
@@ -12,6 +14,8 @@ import platform.UserNotifications.UNUserNotificationCenterDelegateProtocol
 
 @OptIn(ExperimentalForeignApi::class)
 actual object LocalNotification {
+    private val _payloadFlow = MutableSharedFlow<Map<Any?, *>>(replay = 1, extraBufferCapacity = 1)
+
     fun init(userNotificationCenterDelegate: UNUserNotificationCenterDelegateProtocol) {
         KIOSNotification.requestAuthorization()
         UNUserNotificationCenter.currentNotificationCenter().delegate =
@@ -39,18 +43,12 @@ actual object LocalNotification {
         center.removePendingNotificationRequestsWithIdentifiers(listOf(notificationId.toString()))
     }
 
-    actual fun setNotificationListener(callback: (Map<Any?, *>?) -> Unit){
-        KIOSNotification.setNotificationListenerWithCallback(callback)
-    }
-
-    fun notifyNotification(data: Map<Any?, *>?) {
-        if (data != null) {
-            KIOSNotification.notifyNotificationWithData(data)
-        }
+    suspend fun notifyPayloadListeners(data: Map<Any?, *>) {
+        _payloadFlow.emit(data)
     }
 
 
-
+    actual val payloadFlow: SharedFlow<Map<Any?, *>> = _payloadFlow
 
 
 }

@@ -11,14 +11,15 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 actual object LocalNotification {
-//    private var notificationListener: ((Map<Any?, *>) -> Unit)? = null
-    private var notificationListener: ((Map<Any?, *>) -> Unit)? = null
-
-//    private var lastNotificationData: Map<Any?, *>? = null
-    private var lastNotificationListener: Map<Any?, *>? = null
+    private val _payloadFlow = MutableSharedFlow<Map<Any?, *>>(replay = 1, extraBufferCapacity = 1)
 
 
     @SuppressLint("MissingPermission")
@@ -123,17 +124,7 @@ actual object LocalNotification {
     }
 
 
-
-   actual fun setNotificationListener(callback: (Map<Any?, *>?) -> Unit){
-       // If there's saved data, trigger the callback immediately
-       notificationListener = callback
-       lastNotificationListener?.let {
-           callback(it)
-       }
-       lastNotificationListener = null
-   }
-
-    fun notifyNotificationListener(dataJson:String?){
+    fun notifyPayloadListeners(dataJson: String?) {
         if (dataJson != null) {
             val type =
                 object :
@@ -141,14 +132,20 @@ actual object LocalNotification {
             val yourDataMap: Map<Any?, *> =
                 Gson().fromJson(dataJson, type) // Deserialize back to a map
             if (yourDataMap.isNotEmpty()) {
-                lastNotificationListener = yourDataMap
-                notificationListener?.invoke(yourDataMap)
+                CoroutineScope(Dispatchers.Default).launch {
+                    emitPayload(yourDataMap)
+                }
 
             }
 
         }
     }
 
+    private suspend fun emitPayload(data: Map<Any?, *>) {
+        _payloadFlow.emit(data)
+    }
+
+    actual val payloadFlow: SharedFlow<Map<Any?, *>> = _payloadFlow
 }
 
 @SuppressLint("DiscouragedApi")
