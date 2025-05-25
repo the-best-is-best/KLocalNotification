@@ -11,11 +11,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.launch
 import java.util.Calendar
 
 actual object LocalNotification {
@@ -132,17 +129,15 @@ actual object LocalNotification {
             val yourDataMap: Map<Any?, *> =
                 Gson().fromJson(dataJson, type) // Deserialize back to a map
             if (yourDataMap.isNotEmpty()) {
-                CoroutineScope(Dispatchers.Default).launch {
                     emitPayload(yourDataMap)
-                }
-
             }
 
         }
     }
 
-    private suspend fun emitPayload(data: Map<Any?, *>) {
-        _payloadFlow.emit(data)
+    private fun emitPayload(data: Map<Any?, *>) {
+        _payloadFlow.tryEmit(data)
+
     }
 
     actual val payloadFlow: SharedFlow<Map<Any?, *>> = _payloadFlow

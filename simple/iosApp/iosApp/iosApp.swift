@@ -50,13 +50,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let userInfo = notification.content.userInfo
 
         // Notify about the notification click
-        Task {
-            do {
-                try await LocalNotification.shared.notifyPayloadListeners(data: userInfo)
-            } catch {
-                print("Error notifying payload listeners: \(error)")
-            }
-        }
+        LocalNotification.shared.notifyPayloadListeners(data: userInfo)
+
         // Always call the completion handler
         completionHandler()
     }

@@ -43,8 +43,8 @@ actual object LocalNotification {
         center.removePendingNotificationRequestsWithIdentifiers(listOf(notificationId.toString()))
     }
 
-    suspend fun notifyPayloadListeners(data: Map<Any?, *>) {
-        _payloadFlow.emit(data)
+    fun notifyPayloadListeners(data: Map<Any?, *>) {
+        _payloadFlow.tryEmit(data)
     }
 
 
