@@ -182,7 +182,7 @@ kotlin {
             //implementation(libs.kpermissions)
             implementation(libs.gson)
             implementation(libs.androidx.core.ktx)
-            implementation(libs.androidx.startup.runtime)
+//            implementation(libs.androidx.startup.runtime)
             implementation(libs.accompanist.permissions)
 
 
