@@ -2,6 +2,7 @@ package io.tbib.klocal_notification
 
 import io.github.native.kiosnotification.KIOSNotification
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.datetime.LocalDateTime
@@ -45,6 +46,11 @@ actual object LocalNotification {
 
     fun notifyPayloadListeners(data: Map<Any?, *>) {
         _payloadFlow.tryEmit(data)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    actual fun removeDataLister() {
+        _payloadFlow.resetReplayCache()
     }
 
 

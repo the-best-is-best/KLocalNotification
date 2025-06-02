@@ -1,6 +1,7 @@
 package io.tbib.klocal_notification
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -10,6 +11,7 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 
 
+@SuppressLint("ComposableNaming")
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 actual fun LocalNotificationRequestAuthorization(callback: (Boolean) -> Unit): KPermissionRequest {

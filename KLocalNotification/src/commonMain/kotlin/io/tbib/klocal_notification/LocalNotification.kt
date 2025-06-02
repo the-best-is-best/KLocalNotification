@@ -28,5 +28,7 @@ expect object LocalNotification {
 
     val payloadFlow: SharedFlow<Map<Any?, *>>
 
+    fun removeDataLister()
+
 }
 

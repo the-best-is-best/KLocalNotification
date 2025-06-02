@@ -11,6 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import java.util.Calendar
@@ -141,6 +142,11 @@ actual object LocalNotification {
     }
 
     actual val payloadFlow: SharedFlow<Map<Any?, *>> = _payloadFlow
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    actual fun removeDataLister() {
+        _payloadFlow.resetReplayCache()
+    }
 }
 
 @SuppressLint("DiscouragedApi")
