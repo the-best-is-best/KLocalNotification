@@ -12,6 +12,7 @@ import platform.Foundation.NSDate
 import platform.Foundation.dateWithTimeIntervalSince1970
 import platform.UserNotifications.UNUserNotificationCenter
 import platform.UserNotifications.UNUserNotificationCenterDelegateProtocol
+import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalForeignApi::class)
 actual object LocalNotification {
@@ -59,6 +60,7 @@ actual object LocalNotification {
 
 }
 
+@OptIn(ExperimentalTime::class)
 private fun LocalDateTime.toNSDate(): NSDate {
     val instant = this.toInstant(TimeZone.currentSystemDefault())
     return NSDate.dateWithTimeIntervalSince1970(instant.epochSeconds.toDouble())
