@@ -14,6 +14,8 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.number
 import java.util.Calendar
 
 actual object LocalNotification {
@@ -52,8 +54,8 @@ actual object LocalNotification {
         val calendar = Calendar.getInstance()
         calendar.set(
             config.dateTime.year,
-            config.dateTime.monthNumber - 1,  // Adjust month to 0-based index
-            config.dateTime.dayOfMonth,
+            config.dateTime.month.ordinal,  // Adjust month to 0-based index
+            config.dateTime.day,
             config.dateTime.hour,
             config.dateTime.minute,
             config.dateTime.second
