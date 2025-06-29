@@ -41,7 +41,7 @@ tasks.withType<PublishToMavenRepository> {
 extra["packageNameSpace"] = "io.tbib.klocal_notification"
 extra["groupId"] = "io.github.the-best-is-best"
 extra["artifactId"] = "klocal-notification"
-extra["version"] = "1.2.2"
+extra["version"] = "1.2.3"
 extra["packageName"] = "KLocalNotification"
 extra["packageUrl"] = "https://github.com/the-best-is-best/KLocalNotification"
 extra["packageDescription"] =
@@ -131,8 +131,7 @@ kotlin {
         macosArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = packageName
-            isStatic = true
+            baseName = packageName +"Core"
         }
         it.compilations.getByName("main") {
             val defFileName = when (target.name) {
@@ -147,7 +146,7 @@ kotlin {
 
             val defFile = project.file("native/$defFileName")
             if (defFile.exists()) {
-                cinterops.create("FirebaseAnalytics") {
+                cinterops.create("KIOSNotification") {
                     defFile(defFile)
                     packageName = "io.github.native.kiosnotification"
                 }
@@ -205,7 +204,7 @@ kotlin {
 
 android {
     namespace = extra["packageNameSpace"].toString()
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 21
@@ -303,7 +302,7 @@ abstract class GenerateDefFilesTask : DefaultTask() {
             // Generate the content for the .def file
             val content = """
                 language = Objective-C
-                package = ${packageName.get()}
+                package = "io.github.native.kiosnotification"
                 headers = $headerPath
             """.trimIndent()
 
