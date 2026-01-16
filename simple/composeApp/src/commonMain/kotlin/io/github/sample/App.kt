@@ -21,13 +21,15 @@ import io.github.sample.theme.AppTheme
 import io.tbib.klocal_notification.LocalNotification
 import io.tbib.klocal_notification.LocalNotificationRequestAuthorization
 import io.tbib.klocal_notification.NotificationConfig
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.math.absoluteValue
 import kotlin.random.Random
+import kotlin.time.Clock
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 @Composable
 internal fun App() = AppTheme {
     var dataNotification by remember { mutableStateOf<Map<Any?, *>>(mapOf("" to "")) }
@@ -63,7 +65,7 @@ internal fun App() = AppTheme {
                 Clock.System.now().plus(5.seconds).toLocalDateTime(TimeZone.currentSystemDefault())
             LocalNotification.showNotification(
                 config = NotificationConfig(
-                    id = notificationId!!,
+                    id = notificationId,
                     idChannel = "reminder",
                     title = "Test title",
                     message = "Test Message",
@@ -81,7 +83,7 @@ internal fun App() = AppTheme {
             println("id is removed $notificationId")
 
             if (notificationId != null)
-                LocalNotification.removeNotification(notificationId!!)
+                LocalNotification.removeNotification(notificationId)
         }) {
             Text("remove notification")
         }

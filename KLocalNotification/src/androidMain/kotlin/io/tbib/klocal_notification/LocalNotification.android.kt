@@ -52,8 +52,8 @@ actual object LocalNotification {
         val calendar = Calendar.getInstance()
         calendar.set(
             config.dateTime.year,
-            config.dateTime.monthNumber - 1,  // Adjust month to 0-based index
-            config.dateTime.dayOfMonth,
+            config.dateTime.month.ordinal,  // Adjust month to 0-based index
+            config.dateTime.day,
             config.dateTime.hour,
             config.dateTime.minute,
             config.dateTime.second

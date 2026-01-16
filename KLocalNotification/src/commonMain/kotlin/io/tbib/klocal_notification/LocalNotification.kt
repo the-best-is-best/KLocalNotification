@@ -1,12 +1,13 @@
 package io.tbib.klocal_notification
 
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
-data class NotificationConfig(
+data class NotificationConfig @OptIn(ExperimentalTime::class) constructor(
     val id: Int,
     val idChannel: String,
     val title: String,

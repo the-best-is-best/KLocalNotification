@@ -1,6 +1,5 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
-import com.vanniktech.maven.publish.SonatypeHost
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.getCurrentOperatingSystem
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
@@ -10,6 +9,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose)
+//    alias(libs.plugins.kotlin.serialization)
     id("maven-publish")
     id("signing")
     alias(libs.plugins.maven.publish)
@@ -41,7 +41,7 @@ tasks.withType<PublishToMavenRepository> {
 extra["packageNameSpace"] = "io.tbib.klocal_notification"
 extra["groupId"] = "io.github.the-best-is-best"
 extra["artifactId"] = "klocal-notification"
-extra["version"] = "1.2.1"
+extra["version"] = "1.4.1"
 extra["packageName"] = "KLocalNotification"
 extra["packageUrl"] = "https://github.com/the-best-is-best/KLocalNotification"
 extra["packageDescription"] =
@@ -62,7 +62,7 @@ mavenPublishing {
         extra["version"].toString()
     )
 
-    publishToMavenCentral(SonatypeHost.S01, true)
+    publishToMavenCentral(true)
     signAllPublications()
 
     pom {
@@ -131,8 +131,7 @@ kotlin {
         macosArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = packageName
-            isStatic = true
+            baseName = packageName + "Core"
         }
         it.compilations.getByName("main") {
             val defFileName = when (target.name) {
@@ -147,7 +146,7 @@ kotlin {
 
             val defFile = project.file("native/$defFileName")
             if (defFile.exists()) {
-                cinterops.create("FirebaseAnalytics") {
+                cinterops.create("KIOSNotification") {
                     defFile(defFile)
                     packageName = "io.github.native.kiosnotification"
                 }
@@ -182,7 +181,7 @@ kotlin {
             //implementation(libs.kpermissions)
             implementation(libs.gson)
             implementation(libs.androidx.core.ktx)
-            implementation(libs.androidx.startup.runtime)
+//            implementation(libs.androidx.startup.runtime)
             implementation(libs.accompanist.permissions)
 
 
@@ -205,7 +204,7 @@ kotlin {
 
 android {
     namespace = extra["packageNameSpace"].toString()
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 21
@@ -220,15 +219,7 @@ android {
     }
 }
 
-//https://developer.android.com/develop/ui/compose/testing#setup
-dependencies {
-    androidTestImplementation(libs.androidx.uitest.junit4)
-    debugImplementation(libs.androidx.uitest.testManifest)
-    //temporary fix: https://youtrack.jetbrains.com/issue/CMP-5864
-    androidTestImplementation("androidx.test:monitor") {
-        version { strictly("1.6.1") }
-    }
-}
+
 //val composePackage = extra["packageNameSpace"].toString()
 //compose.desktop {
 //    application {
@@ -303,7 +294,7 @@ abstract class GenerateDefFilesTask : DefaultTask() {
             // Generate the content for the .def file
             val content = """
                 language = Objective-C
-                package = ${packageName.get()}
+                package = "io.github.native.kiosnotification"
                 headers = $headerPath
             """.trimIndent()
 

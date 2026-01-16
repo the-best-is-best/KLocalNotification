@@ -1,7 +1,7 @@
 import UIKit
 import ComposeApp
 import UserNotifications
-
+import Local
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
