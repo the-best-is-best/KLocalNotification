@@ -31,4 +31,5 @@ dependencyResolutionManagement {
     }
 }
 include(":KLocalNotification")
-include(":simple:composeApp")
+include(":simple:sharedUI")
+include(":simple:androidSimple")
