@@ -19,8 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.sample.theme.AppTheme
 import io.tbib.klocal_notification.LocalNotification
-import io.tbib.klocal_notification.LocalNotificationRequestAuthorization
 import io.tbib.klocal_notification.NotificationConfig
+import io.tbib.klocal_notification_compose.LocalNotificationRequestAuthorization
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.math.absoluteValue

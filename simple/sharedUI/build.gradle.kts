@@ -42,7 +42,7 @@ kotlin {
             implementation(libs.components.resources)
             implementation(libs.ui.tooling.preview)
 
-            implementation(project(":KLocalNotification"))
+            implementation(project(":KLocalNotificationCompose"))
             implementation(libs.kotlinx.datetime)
 
 

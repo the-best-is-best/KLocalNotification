@@ -51,11 +51,11 @@ kotlin {
 }
 
 dependencies {
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.10.0")
+    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(project(":simple:sharedUI"))
     implementation(libs.androidx.activityCompose)
     implementation(libs.components.resources)
-    implementation(project(":KLocalNotification"))
+    implementation(project(":KLocalNotificationCompose"))
 
 }
 

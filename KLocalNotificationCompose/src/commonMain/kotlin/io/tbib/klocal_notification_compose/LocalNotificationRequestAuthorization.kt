@@ -1,0 +1,8 @@
+package io.tbib.klocal_notification_compose
+
+import androidx.compose.runtime.Composable
+import io.tbib.klocal_notification.KPermissionRequest
+
+
+@Composable
+expect fun LocalNotificationRequestAuthorization(callback: (Boolean) -> Unit): KPermissionRequest

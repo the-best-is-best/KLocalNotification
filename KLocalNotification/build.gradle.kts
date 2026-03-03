@@ -6,8 +6,8 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
-    alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.compose)
+//    alias(libs.plugins.compose.compiler)
+//    alias(libs.plugins.compose)
 //    alias(libs.plugins.kotlin.serialization)
     id("maven-publish")
     id("signing")
@@ -40,7 +40,7 @@ tasks.withType<PublishToMavenRepository> {
 extra["packageNameSpace"] = "io.tbib.klocal_notification"
 extra["groupId"] = "io.github.the-best-is-best"
 extra["artifactId"] = "klocal-notification"
-extra["version"] = "1.4.2"
+extra["version"] = "2.0.0"
 extra["packageName"] = "KLocalNotification"
 extra["packageUrl"] = "https://github.com/the-best-is-best/KLocalNotification"
 extra["packageDescription"] =
@@ -153,7 +153,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(compose.runtime)
+//            implementation(compose.runtime)
 //            implementation(compose.foundation)
 //            implementation(compose.material3)
 //            implementation(compose.components.resources)
